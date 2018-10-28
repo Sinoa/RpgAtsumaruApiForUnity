@@ -1,0 +1,16 @@
+{
+    "name": "RpgAtsumaruApiForUnity",
+    "references": [],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor",
+        "macOSStandalone",
+        "WebGL"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
