@@ -4,7 +4,6 @@
     "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor",
-        "macOSStandalone",
         "WebGL"
     ],
     "excludePlatforms": [],
