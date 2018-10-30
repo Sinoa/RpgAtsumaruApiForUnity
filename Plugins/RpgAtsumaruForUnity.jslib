@@ -67,7 +67,7 @@ var RpgAtsumaruApiForUnity =
 
 
     // RPGアツマールサーバーストレージからデータを取得します
-    GetStorageItems: function(objectName, methodName)
+    GetStorageItems: function()
     {
         // 未初期化なら
         if (!Context.initialized)
@@ -123,7 +123,7 @@ var RpgAtsumaruApiForUnity =
 
     // RPGアツマールサーバーストレージから指定されたキーのデータを削除します
     // key : 削除するデータのキー（仕様上 "system", "data{N}" といった予約キー名を使うことを推奨します）
-    RemoveStorageItem: function(key, objectName, methodName)
+    RemoveStorageItem: function(key)
     {
         // 未初期化なら
         if (!Context.initialized)
@@ -144,7 +144,57 @@ var RpgAtsumaruApiForUnity =
                 // 完了したことを通知する
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.removeItem);
             });
-    }
+    },
+
+
+    // RPGアツマール側で設定されている、現在のマスターボリュームを0.0～1.0の正規化された値を取得します
+    // 戻り値 : 正規化された現在のマスターボリュームを返します
+    GetCurrentVolume: function()
+    {
+    	// この関数は素直にバイパスするだけで、現在のボリューム値をそのまま返す
+    	return window.RPGAtsumaru.volume.getCurrentValue();
+    },
+
+
+    // RPGアツマールの音量変化通知を受け取るリスンを開始します
+    StartVolumeListen: function()
+    {
+    	// 未初期化 または 既に購読している なら
+    	if (!Context.initialized || Context.volumeSubscription != null)
+    	{
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return
+    	}
+
+
+    	// 音量変化を購読する
+    	Context.volumeSubscription = window.RPGAtsumaru.volume.changed.subscribe({
+    		next: function(volume)
+    		{
+    			// Unityに変化した音量を通知する
+    			SendMessage(Context.unityObjectName, Context.unityMethodNames.volumeChanged, volume);
+    		},
+			error: function(err) {},
+			complete: function() {},
+    	});
+    },
+
+
+    // RPGアツマールの音量変化通知を受け取るリスンを停止します
+    StopVolumeListen: function()
+    {
+    	// 未初期化 または 購読していない なら
+    	if (!Context.initialized || Context.volumeSubscription == null)
+    	{
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return
+    	}
+
+
+    	// 購読を停止する
+    	Context.volumeSubscription.unsubscribe();
+    	Context.volumeSubscription = null;
+    },
 };
 
 
