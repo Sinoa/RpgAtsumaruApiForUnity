@@ -41,7 +41,7 @@ var RpgAtsumaruApiForUnity =
     Initialize: function(initializeParameterJson)
     {
         // 既に初期化済みなら
-        if (Context.initialized)
+        if (IsInitialized())
         {
             // 直ちに終了
             return;
@@ -66,11 +66,20 @@ var RpgAtsumaruApiForUnity =
     },
 
 
+    // プラグインが初期化済みかどうか
+    // 戻り値 : 初期化済みなら true を、未初期化なら false を返します
+    IsInitialized: function()
+    {
+        // 初期化されているかどうかの情報をそのまま返す
+        return Context.initialized;
+    }
+
+
     // RPGアツマールサーバーストレージからデータを取得します
     GetStorageItems: function()
     {
         // 未初期化なら
-        if (!Context.initialized)
+        if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
             return
@@ -98,7 +107,7 @@ var RpgAtsumaruApiForUnity =
     SetStorageItem: function(key, value)
     {
         // 未初期化なら
-        if (!Context.initialized)
+        if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
             return
@@ -126,7 +135,7 @@ var RpgAtsumaruApiForUnity =
     RemoveStorageItem: function(key)
     {
         // 未初期化なら
-        if (!Context.initialized)
+        if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
             return
@@ -160,7 +169,7 @@ var RpgAtsumaruApiForUnity =
     StartVolumeListen: function()
     {
     	// 未初期化 または 既に購読している なら
-    	if (!Context.initialized || Context.volumeSubscription != null)
+    	if (!IsInitialized() || Context.volumeSubscription != null)
     	{
             // 直ちに終了する（応答するにも応答先を知らない）
             return
@@ -184,7 +193,7 @@ var RpgAtsumaruApiForUnity =
     StopVolumeListen: function()
     {
     	// 未初期化 または 購読していない なら
-    	if (!Context.initialized || Context.volumeSubscription == null)
+    	if (!IsInitialized() || Context.volumeSubscription == null)
     	{
             // 直ちに終了する（応答するにも応答先を知らない）
             return

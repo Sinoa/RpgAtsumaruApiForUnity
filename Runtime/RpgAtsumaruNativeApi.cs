@@ -71,6 +71,14 @@ namespace RpgAtsumaruApiForUnity
 
 
         /// <summary>
+        /// ネイティブプラグインが初期化済みかどうか
+        /// </summary>
+        /// <returns>ネイティブプラグインが初期化済みの場合は true を、未初期化の場合は false を返します</returns>
+        [DllImport("__Internal")]
+        public static extern bool IsInitialized();
+
+
+        /// <summary>
         /// RPGアツマールのサーバーストレージに保存されたデータをすべて取得します
         /// </summary>
         [DllImport("__Internal")]
