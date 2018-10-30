@@ -17,14 +17,64 @@
 // Unity用RPGアツマールオブジェクトを宣言
 var RpgAtsumaruApiForUnity =
 {
+    // プラグインの状態を保持するコンテキストテーブルです
+    $Context:
+    {
+        initialized: false,       // プラグインが初期化されたかどうか
+        unityObjectName: "",      // 非同期操作時にUnityへ通知するためのゲームオブジェクト名
+        volumeSubscription: null, // 音量APIのサブスクリプション参照
+        unityMethodNames:         // 非同期的にUnityへ通知するための各種メソッド名
+        {
+            // Storage API
+            getItems: "",   // getItems APIの通知名
+            setItems: "",   // setItems APIの通知名
+            removeItem: "", // removeItem APIの通知名
+
+            // Volume API
+            volumeChanged: "", // changed APIの通知名
+        },
+    },
+
+
+    // プラグインの初期化を行います
+    // initializeParameterJson : 初期化するためのパラメータをJSON化した値
+    Initialize: function(initializeParameterJson)
+    {
+        // 既に初期化済みなら
+        if (Context.initialized)
+        {
+            // 直ちに終了
+            return;
+        }
+
+
+        // 受け取ったjsonデータをパースする
+        var jsonData = Pointer_stringify(initializeParameterJson);
+        var initParam = JSON.parse(jsonData);
+
+
+        // コンテキストを初期化していく
+        Context.unityObjectName = initParam.UnityObjectName;
+        Context.unityMethodNames.getItems = initParam.GetItemsCallback;
+        Context.unityMethodNames.setItems = initParam.SetItemsCallback;
+        Context.unityMethodNames.removeItem = initParam.RemoveItemCallback;
+        Context.unityMethodNames.volumeChanged = initParam.VolumeChangedCallback;
+
+
+        // 初期化済みをマーク
+        Context.initialized = true;
+    },
+
+
     // RPGアツマールサーバーストレージからデータを取得します
-    // objectName : データの取得が完了した時に、データの通知を受けるゲームオブジェクト名
-    // methodName : objectNameに送信されるpublicなメソッド名（引数はjsonデータを１つ受け取る関数であるべきです）
     GetStorageItems: function(objectName, methodName)
     {
-        // C#文字列のポインタからJS文字列として取得
-        var jsObjectName = Pointer_stringify(objectName);
-        var jsMethodName = Pointer_stringify(methodName);
+        // 未初期化なら
+        if (!Context.initialized)
+        {
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return
+        }
 
 
         // RPGアツマールサーバーストレージからデータを拾ってくる
@@ -37,7 +87,7 @@ var RpgAtsumaruApiForUnity =
 
 
                 // Unityに生成したJsonデータを送る
-                SendMessage(jsObjectName, jsMethodName, jsonData);
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.getItems, jsonData);
             });
     },
 
@@ -45,15 +95,19 @@ var RpgAtsumaruApiForUnity =
     // RPGアツマールサーバーストレージにデータを設定します
     // key : 設定するデータのキー（仕様上 "system", "data{N}" といった予約キー名を使うことを推奨します）
     // value : 設定するデータの内容（約1KB=1ブロック相当）
-    // objectName : データの設定が完了した時に、通知を受けるゲームオブジェクト名
-    // methodName : objectNameに送信されるpublicなメソッド名（引数はありません）
-    SetStorageItem: function(key, value, objectName, methodName)
+    SetStorageItem: function(key, value)
     {
+        // 未初期化なら
+        if (!Context.initialized)
+        {
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return
+        }
+
+
         // C#文字列のポインタからJS文字列として取得
         var jsKey = Pointer_stringify(key);
         var jsVal = Pointer_stringify(value);
-        var jsObjectName = Pointer_stringify(objectName);
-        var jsMethodName = Pointer_stringify(methodName);
 
 
         // セーブデータテーブルを生成してRPGアツマールサーバーへ設定する
@@ -62,21 +116,25 @@ var RpgAtsumaruApiForUnity =
             .then(function()
             {
                 // 完了したことを通知する
-                SendMessage(jsObjectName, jsMethodName);
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.setItems);
             });
     },
 
 
     // RPGアツマールサーバーストレージから指定されたキーのデータを削除します
     // key : 削除するデータのキー（仕様上 "system", "data{N}" といった予約キー名を使うことを推奨します）
-    // objectName : データの削除が完了した時に、通知を受けるゲームオブジェクト名
-    // methodName : objectNameに送信されるpublicなメソッド名（引数はありません）
     RemoveStorageItem: function(key, objectName, methodName)
     {
+        // 未初期化なら
+        if (!Context.initialized)
+        {
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return
+        }
+
+
         // C#文字列のポインタからJS文字列として取得
         var jsKey = Pointer_stringify(key);
-        var jsObjectName = Pointer_stringify(objectName);
-        var jsMethodName = Pointer_stringify(methodName);
 
 
         // RPGアツマールのストレージアイテム削除APIを叩く
@@ -84,10 +142,14 @@ var RpgAtsumaruApiForUnity =
             .then(function()
             {
                 // 完了したことを通知する
-                SendMessage(jsObjectName, jsMethodName);
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.removeItem);
             });
     }
 };
+
+
+// 内部依存定義の追加
+autoAddDeps(RpgAtsumaruApiForUnity, "$Context");
 
 
 // Unityライブラリにライブラリオブジェクトを登録
