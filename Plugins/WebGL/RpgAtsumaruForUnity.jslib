@@ -72,7 +72,7 @@ var RpgAtsumaruApiForUnity =
     {
         // 初期化されているかどうかの情報をそのまま返す
         return Context.initialized;
-    }
+    },
 
 
     // RPGアツマールサーバーストレージからデータを取得します
@@ -82,7 +82,7 @@ var RpgAtsumaruApiForUnity =
         if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
-            return
+            return;
         }
 
 
@@ -110,7 +110,7 @@ var RpgAtsumaruApiForUnity =
         if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
-            return
+            return;
         }
 
 
@@ -136,7 +136,7 @@ var RpgAtsumaruApiForUnity =
         if (!IsInitialized())
         {
             // 直ちに終了する（応答するにも応答先を知らない）
-            return
+            return;
         }
 
 
@@ -170,7 +170,7 @@ var RpgAtsumaruApiForUnity =
     	if (!IsInitialized() || Context.volumeSubscription != null)
     	{
             // 直ちに終了する（応答するにも応答先を知らない）
-            return
+            return;
     	}
 
 
@@ -194,7 +194,7 @@ var RpgAtsumaruApiForUnity =
     	if (!IsInitialized() || Context.volumeSubscription == null)
     	{
             // 直ちに終了する（応答するにも応答先を知らない）
-            return
+            return;
     	}
 
 
