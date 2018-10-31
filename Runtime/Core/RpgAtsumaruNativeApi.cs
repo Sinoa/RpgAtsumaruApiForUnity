@@ -86,16 +86,15 @@ namespace RpgAtsumaruApiForUnity
 
 
         /// <summary>
-        /// 指定されたキーと値でRPGアツマールのサーバーストレージに設定します。
+        /// 指定されたJSONデータでRPGアツマールのサーバーストレージに設定します。
         /// </summary>
         /// <remarks>
         /// キー名はRPGアツマール側の仕様により、システムファイルは "system"、スロットファイルは "data{N}"、といったパターンである必要があります。
         /// もし、仕様と異なるキー名で渡した場合は "その他" として扱われます。
         /// </remarks>
-        /// <param name="key">設定するデータのキー名（"system" または "data{N}" の命名規則を推奨します）</param>
-        /// <param name="value">設定する文字列データ</param>
+        /// <param name="saveDataJson">{"SaveDataItems":[{"key":"key","value":"value"},,,,]}の構造を持ったJSONデータ</param>
         [DllImport("__Internal")]
-        public static extern void SetStorageItem(string key, string value);
+        public static extern void SetStorageItems(string saveDataJson);
 
 
         /// <summary>
