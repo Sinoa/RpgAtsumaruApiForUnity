@@ -176,8 +176,9 @@ namespace RpgAtsumaruApiForUnity
                     // 同期用データにダーティなデータを渡す
                     for (int i = 0; i < dirtyDataList.Count; ++i)
                     {
-                        // ダーティなデータを受け取る
+                        // ダーティなデータを受け取ってダーティをリセット
                         syncSaveData.SaveDataItems[i] = new DataRecord() { key = dirtyDataList[i].Key, value = dirtyDataList[i].SaveData };
+                        dirtyDataList[i].ClearDirty();
                     }
 
 
