@@ -101,10 +101,10 @@ var RpgAtsumaruApiForUnity =
     },
 
 
-    // RPGアツマールサーバーストレージにデータを設定します
-    // key : 設定するデータのキー（仕様上 "system", "data{N}" といった予約キー名を使うことを推奨します）
-    // value : 設定するデータの内容（約1KB=1ブロック相当）
-    SetStorageItem: function(key, value)
+    // RPGアツマールサーバーストレージにデータを設定します。
+    // 設定するデータのキーは、仕様上 "system", "data{N}" といった予約キー名を使うことを推奨します。
+    // saveDataJson : {"SaveDataItems":[{"key":"key","value":"value"},,,,]}の構造を持ったJSONデータ
+    SetStorageItems: function(saveDataJson)
     {
         // 未初期化なら
         if (!IsInitialized())
@@ -114,14 +114,12 @@ var RpgAtsumaruApiForUnity =
         }
 
 
-        // C#文字列のポインタからJS文字列として取得
-        var jsKey = Pointer_stringify(key);
-        var jsVal = Pointer_stringify(value);
+        // C#文字列のポインタからJS文字列として取得してJSONパースをする
+        var saveData = JSON.parse(Pointer_stringify(saveDataJson));
 
 
-        // セーブデータテーブルを生成してRPGアツマールサーバーへ設定する
-        var saveData = [{key:jsKey, value:jsVal}];
-        window.RPGAtsumaru.storage.setItems(saveData)
+        // セーブデータをRPGアツマールサーバーへ設定する
+        window.RPGAtsumaru.storage.setItems(saveData.SaveDataItems)
             .then(function()
             {
                 // 完了したことを通知する
