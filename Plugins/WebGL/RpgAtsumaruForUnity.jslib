@@ -50,7 +50,6 @@ var RpgAtsumaruApiForUnity =
     Initialize: function(initializeParameterJson)
     {
         // 既に初期化済みなら
-        console.log("fromJS InitializeStart");
         if (Context.initialized)
         {
             // 直ちに終了
