@@ -25,6 +25,13 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 * zlib/libpng ライセンス
 [zlib/libpng](https://opensource.org/licenses/Zlib)
 
+### 使用ライブラリやソフトウェア(Used other library and software)
+
+詳細表記は LICENSELIST.md に表記
+
+* IceMilkTea (zlib/libpng License) <https://bitbucket.org/Sinoa/icemilktea/wiki/Home>
+
+
 ## 履歴(Version)
 
 未記入
