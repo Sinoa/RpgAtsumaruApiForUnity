@@ -29,6 +29,7 @@ namespace RpgAtsumaruApiForUnity
 
         // クラス変数宣言
         private static RpgAtsumaruStorage storageApi;
+        private static RpgAtsumaruVolume volumeApi;
 
 
 
@@ -89,6 +90,7 @@ namespace RpgAtsumaruApiForUnity
 
             // 各APIを処理するクラスのインスタンスを生成
             storageApi = new RpgAtsumaruStorage(receiver);
+            volumeApi = new RpgAtsumaruVolume(receiver);
         }
 
 
@@ -102,6 +104,19 @@ namespace RpgAtsumaruApiForUnity
             // 例外判定を入れてからAPIのインスタンスを返す
             ThrowIfNotInitialized();
             return storageApi;
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのマスター音量を制御するAPIを取得します
+        /// </summary>
+        /// <returns>マスター音量制御APIのインスタンスを返します</returns>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruVolume GetVolumeApi()
+        {
+            // 例外判定を入れてからAPIのインスタンスを返す
+            ThrowIfNotInitialized();
+            return volumeApi;
         }
 
 
