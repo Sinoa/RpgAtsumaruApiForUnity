@@ -25,9 +25,6 @@ var RpgAtsumaruApiForUnity =
         volumeSubscription: null, // 音量APIのサブスクリプション参照
         unityMethodNames:         // 非同期的にUnityへ通知するための各種メソッド名
         {
-            // Error
-            errorHandler: "", // APIエラーハンドラ名
-
             // Storage API
             getItems: "",   // getItems APIの通知名
             setItems: "",   // setItems APIの通知名
@@ -39,16 +36,6 @@ var RpgAtsumaruApiForUnity =
             // OpenLink API
             openLink: "", // openLink APIの通知名
         },
-    },
-
-
-    // 各APIの共通エラーをUnityへ送信します
-    // error : 発生したエラーの内容（APIのエラーオブジェクトをそのまま渡してください）
-    $SendError: function(error)
-    {
-        // エラー内容をJSON化して送る
-        var jsonData = JSON.stringify(error);
-        SendMessage(Context.unityObjectName, Context.unityMethodNames.errorHandler, jsonData);
     },
 
 
@@ -80,7 +67,6 @@ var RpgAtsumaruApiForUnity =
 
         // コンテキストを初期化していく
         Context.unityObjectName = initParam.UnityObjectName;
-        Context.unityMethodNames.errorHandler = initParam.ErrorHandler;
         Context.unityMethodNames.getItems = initParam.GetItemsCallback;
         Context.unityMethodNames.setItems = initParam.SetItemsCallback;
         Context.unityMethodNames.removeItem = initParam.RemoveItemCallback;
@@ -230,13 +216,15 @@ var RpgAtsumaruApiForUnity =
         window.RPGAtsumaru.popups.openLink(url)
             .then(function()
             {
-                // UnityにopenUrlを操作した通知をする
-                SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink);
+            	// エラーは発生しなかったJSONデータを作って結果を通知する
+            	var jsonData = JSON.stringify({ErrorOccured:false});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
             })
             .catch(function(error)
             {
-                // 発生したエラーを送信する
-                SendError(error);
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
             });
     },
 };
@@ -244,7 +232,6 @@ var RpgAtsumaruApiForUnity =
 
 // 内部依存定義の追加
 autoAddDeps(RpgAtsumaruApiForUnity, "$Context");
-autoAddDeps(RpgAtsumaruApiForUnity, "$SendError");
 
 
 // Unityライブラリにライブラリオブジェクトを登録

@@ -21,133 +21,6 @@ using System.Runtime.InteropServices;
 namespace RpgAtsumaruApiForUnity
 {
     /// <summary>
-    /// ネイティブプラグインを初期化する為のパラメータを定義した構造体です
-    /// </summary>
-    [Serializable]
-    internal struct RptAtsumaruNativeApiInitializeParameter
-    {
-        /// <summary>
-        /// ネイティブプラグインからUnityへ通知される際、その通知を受けるゲームオブジェクトの名前
-        /// </summary>
-        public string UnityObjectName;
-
-
-        /// <summary>
-        /// ネイティブプラグインからのエラー通知を受けるコールバック関数名（引数にはエラーオブジェクトのJSONデータを受ける文字列型が必要です）
-        /// </summary>
-        public string ErrorHandler;
-
-
-        /// <summary>
-        /// Storage API の getItems 関数を呼び出した時の完了通知を受けるコールバック関数名（引数には取得したJSONデータを受け取る文字列型が必要です）
-        /// </summary>
-        public string GetItemsCallback;
-
-
-        /// <summary>
-        /// Storage API の setItems 関数を呼び出した時の完了通知を受けるコールバック関数名
-        /// </summary>
-        public string SetItemsCallback;
-
-
-        /// <summary>
-        /// Storage API の removeItem 関数を呼び出した時の完了通知を受けるコールバック関数名
-        /// </summary>
-        public string RemoveItemCallback;
-
-
-        /// <summary>
-        /// Volume API の changed.subscrive 関数に登録したオブザーバの値を受けった通知を受けるコールバック関数名（引数には音量を受け取るfloat型が必要です）
-        /// </summary>
-        public string VolumeChangedCallback;
-
-
-        /// <summary>
-        /// OpenLink API の openLink 関数を呼び出した時の完了通知を受けるコールバック関数名
-        /// </summary>
-        public string OpenLinkCallback;
-    }
-
-
-
-    /// <summary>
-    /// RPGアツマールの共通エラーオブジェクトのパラメータを定義した構造体です
-    /// </summary>
-    [Serializable]
-    internal struct RpgAtsumaruApiErrorParameter
-    {
-        /// <summary>
-        /// APIの呼び出し方に問題が発生しています。ネイティブプラグインの実装に問題が無いか確認してください。
-        /// </summary>
-        public const string ErrorCodeBadRequest = "BAD_REQUEST";
-
-        /// <summary>
-        /// ユーザーのログイン情報が必要なAPIを、非ログイン状態で呼び出しています。
-        /// </summary>
-        public const string ErrorCodeUnauthorized = "UNAUTHORIZED";
-
-        /// <summary>
-        /// RPGアツマールサーバーに問題が発生しました。しばらく時間を置いてから再度実行を試みてください。
-        /// </summary>
-        public const string ErrorCodeInternalServerError = "INTERNAL_SERVER_ERROR";
-
-
-
-        /// <summary>
-        /// APIのエラータイプ
-        /// </summary>
-        public string errorType;
-
-
-        /// <summary>
-        /// エラーコード
-        /// </summary>
-        public string code;
-
-
-        /// <summary>
-        /// エラーメッセージ
-        /// </summary>
-        public string message;
-    }
-
-
-
-    /// <summary>
-    /// RPGアツマールサーバーストレージAPIから返却される全体構造を保持する構造体です
-    /// </summary>
-    [Serializable]
-    internal struct RpgAtsumaruSaveData
-    {
-        /// <summary>
-        /// 各データスロット毎のレコード情報
-        /// </summary>
-        public RpgAtsumaruDataRecord[] SaveDataItems;
-    }
-
-
-
-    /// <summary>
-    /// RPGアツマールサーバーストレージが扱うデータスロットの構造を保持する構造体です（KeyValueではなくkeyvalueと小文字）
-    /// </summary>
-    [Serializable]
-    internal struct RpgAtsumaruDataRecord
-    {
-        /// <summary>
-        /// データスロットのキー名
-        /// </summary>
-        public string key;
-
-
-        /// <summary>
-        /// データスロットのデータ
-        /// </summary>
-        public string value;
-    }
-
-
-
-    /// <summary>
     /// RPGアツマールのネイティブAPIとの境界になる静的クラスです
     /// </summary>
     internal static class RpgAtsumaruNativeApi
@@ -226,5 +99,146 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="url">開いてほしいURL</param>
         [DllImport("__Internal")]
         public static extern void OpenLink(string url);
+    }
+
+
+
+    /// <summary>
+    /// ネイティブプラグインを初期化する為のパラメータを定義した構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RptAtsumaruNativeApiInitializeParameter
+    {
+        /// <summary>
+        /// ネイティブプラグインからUnityへ通知される際、その通知を受けるゲームオブジェクトの名前
+        /// </summary>
+        public string UnityObjectName;
+
+
+        /// <summary>
+        /// Storage API の getItems 関数を呼び出した時の完了通知を受けるコールバック関数名（引数には取得したJSONデータを受け取る文字列型が必要です）
+        /// </summary>
+        public string GetItemsCallback;
+
+
+        /// <summary>
+        /// Storage API の setItems 関数を呼び出した時の完了通知を受けるコールバック関数名
+        /// </summary>
+        public string SetItemsCallback;
+
+
+        /// <summary>
+        /// Storage API の removeItem 関数を呼び出した時の完了通知を受けるコールバック関数名
+        /// </summary>
+        public string RemoveItemCallback;
+
+
+        /// <summary>
+        /// Volume API の changed.subscrive 関数に登録したオブザーバの値を受けった通知を受けるコールバック関数名（引数には音量を受け取るfloat型が必要です）
+        /// </summary>
+        public string VolumeChangedCallback;
+
+
+        /// <summary>
+        /// OpenLink API の openLink 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string OpenLinkCallback;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールの共通エラーオブジェクトの構造を定義した構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruApiError
+    {
+        /// <summary>
+        /// APIの呼び出し方に問題が発生しています。ネイティブプラグインの実装に問題が無いか確認してください。
+        /// </summary>
+        public const string ErrorCodeBadRequest = "BAD_REQUEST";
+
+        /// <summary>
+        /// ユーザーのログイン情報が必要なAPIを、非ログイン状態で呼び出しています。
+        /// </summary>
+        public const string ErrorCodeUnauthorized = "UNAUTHORIZED";
+
+        /// <summary>
+        /// RPGアツマールサーバーに問題が発生しました。しばらく時間を置いてから再度実行を試みてください。
+        /// </summary>
+        public const string ErrorCodeInternalServerError = "INTERNAL_SERVER_ERROR";
+
+
+
+        /// <summary>
+        /// APIのエラータイプ
+        /// </summary>
+        public string errorType;
+
+
+        /// <summary>
+        /// エラーコード
+        /// </summary>
+        public string code;
+
+
+        /// <summary>
+        /// エラーメッセージ
+        /// </summary>
+        public string message;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールサーバーストレージAPIから返却される全体構造を保持する構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruSaveData
+    {
+        /// <summary>
+        /// 各データスロット毎のレコード情報
+        /// </summary>
+        public RpgAtsumaruDataRecord[] SaveDataItems;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールサーバーストレージが扱うデータスロットの構造を保持する構造体です（KeyValueではなくkeyvalueと小文字）
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruDataRecord
+    {
+        /// <summary>
+        /// データスロットのキー名
+        /// </summary>
+        public string key;
+
+
+        /// <summary>
+        /// データスロットのデータ
+        /// </summary>
+        public string value;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールのopneLink関数を実行した際の結果を表す構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruOpenLinkResult
+    {
+        /// <summary>
+        /// エラーが発生したかどうか
+        /// </summary>
+        public bool ErrorOccured;
+
+
+        /// <summary>
+        /// エラーが発生した場合のエラー情報
+        /// </summary>
+        public RpgAtsumaruApiError Error;
     }
 }

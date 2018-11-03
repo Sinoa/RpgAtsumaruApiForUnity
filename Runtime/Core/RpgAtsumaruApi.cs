@@ -172,7 +172,6 @@ namespace RpgAtsumaruApiForUnity
             {
                 // オブジェクト名や、コールバック名を設定していく
                 UnityObjectName = CallbackReceiverGameObjectName,
-                ErrorHandler = nameof(RpgAtsumaruApiCallbackReceiver.OnErrorReceived),
                 GetItemsCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageItemsReceived),
                 SetItemsCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageSetItemsCompleted),
                 RemoveItemCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageRemoveItemCompleted),
@@ -247,7 +246,7 @@ namespace RpgAtsumaruApiForUnity
             /// <summary>
             /// RPGアツマールのURLを開くポップアップの表示を完了したイベントです
             /// </summary>
-            public event Action OpenLinkCompleted;
+            public event Action<string> OpenLinkCompleted;
 
 
 
@@ -307,10 +306,11 @@ namespace RpgAtsumaruApiForUnity
             /// <summary>
             /// RPGアツマールのURLポップアップ表示をした完了イベントを処理します
             /// </summary>
-            public void OnOpenLinkCompleted()
+            /// <param name="result">openLink関数の実行結果を含んだjsonデータ</param>
+            public void OnOpenLinkCompleted(string result)
             {
                 // イベントにそのまま横流し
-                OpenLinkCompleted?.Invoke();
+                OpenLinkCompleted?.Invoke(result);
             }
         }
         #endregion
