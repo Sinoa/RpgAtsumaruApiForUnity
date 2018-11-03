@@ -178,6 +178,7 @@ namespace RpgAtsumaruApiForUnity
                 VolumeChangedCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnVolumeChanged),
                 OpenLinkCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnOpenLinkCompleted),
                 CreatorInfoShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnCreatorInfoShown),
+                ScreenshotCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScreenshotCompleted),
             };
 
 
@@ -254,6 +255,11 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<string> CreatorInfoShown;
 
+            /// <summary>
+            /// RPGアツマールのスクリーンショットとそのダイアログ表示を完了したイベントです
+            /// </summary>
+            public event Action<string> ScreenshotCompleted;
+
 
 
             /// <summary>
@@ -328,6 +334,17 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 CreatorInfoShown?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールのスクリーンショットとそのダイアログ表示の完了イベントを処理します
+            /// </summary>
+            /// <param name="result">screenshot.displayModal関数の実行結果を含んだjsonデータ</param>
+            public void OnScreenshotCompleted(string result)
+            {
+                // イベントにそのまま横流し
+                ScreenshotCompleted?.Invoke(result);
             }
         }
         #endregion

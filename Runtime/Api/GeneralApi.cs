@@ -13,6 +13,8 @@
 // 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
+#pragma warning disable 618
+
 using System.Threading.Tasks;
 using IceMilkTea.Core;
 using UnityEngine;
@@ -27,6 +29,7 @@ namespace RpgAtsumaruApiForUnity
         // メンバ変数定義
         private ImtAwaitableManualReset<string> openLinkAwaitable;
         private ImtAwaitableManualReset<string> creatorInfoShowAwaitable;
+        private ImtAwaitableManualReset<string> screenshotAwaitable;
 
 
 
@@ -44,6 +47,7 @@ namespace RpgAtsumaruApiForUnity
             // マニュアルリセット待機可能オブジェクトをシグナル状態で生成する
             openLinkAwaitable = new ImtAwaitableManualReset<string>(true);
             creatorInfoShowAwaitable = new ImtAwaitableManualReset<string>(true);
+            screenshotAwaitable = new ImtAwaitableManualReset<string>(true);
         }
 
 
@@ -66,6 +70,17 @@ namespace RpgAtsumaruApiForUnity
         {
             // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
             creatorInfoShowAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのスクリーンショットとそのダイアログ表示の完了イベントを処理します
+        /// </summary>
+        /// <param name="result">screenshot.displayModal関数の実行結果を含んだjsonデータ</param>
+        private void OnScreenshotCompleted(string result)
+        {
+            // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
+            screenshotAwaitable.Set(result);
         }
 
 
@@ -125,6 +140,32 @@ namespace RpgAtsumaruApiForUnity
 
             // シグナル状態になるまで待って結果を受け取る
             var jsonData = await creatorInfoShowAwaitable;
+            var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
+
+
+            // 結果を返す
+            return (result.ErrorOccured, result.Error.message);
+        }
+
+
+        /// <summary>
+        /// スクリーンショットを撮った後にTwitter投稿ダイアログを非同期で操作します
+        /// </summary>
+        /// <returns>スクリーンショットとTwitter投稿ダイアログを操作しているタスクを返します</returns>
+        [System.Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
+        public async Task<(bool isError, string message)> ScreenshotAsync()
+        {
+            // もし、シグナル状態なら
+            if (screenshotAwaitable.IsCompleted)
+            {
+                // 非シグナル状態にしてScreenshotネイティブプラグイン関数を叩く
+                screenshotAwaitable.Reset();
+                RpgAtsumaruNativeApi.Screenshot();
+            }
+
+
+            // シグナル状態になるまで待って結果を受け取る
+            var jsonData = await screenshotAwaitable;
             var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
 
 

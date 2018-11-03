@@ -116,6 +116,13 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="niconicoUserId">表示するニコニコユーザーID</param>
         [DllImport("__Internal")]
         public static extern void ShowCreatorInformation(int niconicoUserId);
+
+
+        /// <summary>
+        /// スクリーンショットを撮ってTwitterに投稿するダイアログを表示します
+        /// </summary>
+        [DllImport("__Internal"), Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
+        public static extern void Screenshot();
     }
 
 
@@ -163,9 +170,15 @@ namespace RpgAtsumaruApiForUnity
 
 
         /// <summary>
-        /// ShowCreatorInfo API の displayCreatorInformationModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です
+        /// ShowCreatorInfo API の displayCreatorInformationModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
         /// </summary>
         public string CreatorInfoShownCallback;
+
+
+        /// <summary>
+        /// Screenshot API の screenshot.displayModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string ScreenshotCallback;
     }
 
 
