@@ -108,6 +108,14 @@ namespace RpgAtsumaruApiForUnity
         /// <returns>指示されたクエリ名の変数に設定された値を返します</returns>
         [DllImport("__Internal")]
         public static extern string GetQuery(string name);
+
+
+        /// <summary>
+        /// 指定されたニコニコユーザーIDの作者情報ダイアログを表示します
+        /// </summary>
+        /// <param name="niconicoUserId">表示するニコニコユーザーID</param>
+        [DllImport("__Internal")]
+        public static extern void ShowCreatorInformation(int niconicoUserId);
     }
 
 
@@ -152,6 +160,12 @@ namespace RpgAtsumaruApiForUnity
         /// OpenLink API の openLink 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
         /// </summary>
         public string OpenLinkCallback;
+
+
+        /// <summary>
+        /// ShowCreatorInfo API の displayCreatorInformationModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です
+        /// </summary>
+        public string CreatorInfoShownCallback;
     }
 
 
@@ -234,10 +248,10 @@ namespace RpgAtsumaruApiForUnity
 
 
     /// <summary>
-    /// RPGアツマールのopneLink関数を実行した際の結果を表す構造体です
+    /// RPGアツマールのPromise[void]な関数を実行した際の結果を表す構造体です
     /// </summary>
     [Serializable]
-    internal struct RpgAtsumaruOpenLinkResult
+    internal struct RpgAtsumaruBasicResult
     {
         /// <summary>
         /// エラーが発生したかどうか

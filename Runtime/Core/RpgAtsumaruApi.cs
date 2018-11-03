@@ -177,6 +177,7 @@ namespace RpgAtsumaruApiForUnity
                 RemoveItemCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageRemoveItemCompleted),
                 VolumeChangedCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnVolumeChanged),
                 OpenLinkCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnOpenLinkCompleted),
+                CreatorInfoShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnCreatorInfoShown),
             };
 
 
@@ -248,6 +249,11 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<string> OpenLinkCompleted;
 
+            /// <summary>
+            /// RPGアツマールの作者情報ダイアログの表示を完了したイベントです
+            /// </summary>
+            public event Action<string> CreatorInfoShown;
+
 
 
             /// <summary>
@@ -311,6 +317,17 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 OpenLinkCompleted?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールの作者情報ダイアログを表示した完了イベントを処理します
+            /// </summary>
+            /// <param name="result">displayCreatorInformationModal関数の実行結果を含んだjsonデータ</param>
+            public void OnCreatorInfoShown(string result)
+            {
+                // イベントにそのまま横流し
+                CreatorInfoShown?.Invoke(result);
             }
         }
         #endregion

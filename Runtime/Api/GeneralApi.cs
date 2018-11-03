@@ -26,6 +26,7 @@ namespace RpgAtsumaruApiForUnity
     {
         // メンバ変数定義
         private ImtAwaitableManualReset<string> openLinkAwaitable;
+        private ImtAwaitableManualReset<string> creatorInfoShowAwaitable;
 
 
 
@@ -37,10 +38,12 @@ namespace RpgAtsumaruApiForUnity
         {
             // レシーバにイベントを登録する
             receiver.OpenLinkCompleted += OnOpenLinkCompleted;
+            receiver.CreatorInfoShown += OnCreatorInfoShown;
 
 
             // マニュアルリセット待機可能オブジェクトをシグナル状態で生成する
             openLinkAwaitable = new ImtAwaitableManualReset<string>(true);
+            creatorInfoShowAwaitable = new ImtAwaitableManualReset<string>(true);
         }
 
 
@@ -52,6 +55,17 @@ namespace RpgAtsumaruApiForUnity
         {
             // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
             openLinkAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールの作者情報ダイアログを表示した完了イベントを処理します
+        /// </summary>
+        /// <param name="result">displayCreatorInformationModal関数の実行結果を含んだjsonデータ</param>
+        private void OnCreatorInfoShown(string result)
+        {
+            // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
+            creatorInfoShowAwaitable.Set(result);
         }
 
 
@@ -72,7 +86,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="url">URLを開くポップアップに表示するURL</param>
         /// <returns>URLを開くポップアップを開く操作をしているタスクを返します</returns>
-        public async Task<(bool isError, string message)> OpenLink(string url)
+        public async Task<(bool isError, string message)> OpenLinkAsync(string url)
         {
             // もし、シグナル状態なら
             if (openLinkAwaitable.IsCompleted)
@@ -85,7 +99,33 @@ namespace RpgAtsumaruApiForUnity
 
             // シグナル状態になるまで待って結果を受け取る
             var jsonData = await openLinkAwaitable;
-            var result = JsonUtility.FromJson<RpgAtsumaruOpenLinkResult>(jsonData);
+            var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
+
+
+            // 結果を返す
+            return (result.ErrorOccured, result.Error.message);
+        }
+
+
+        /// <summary>
+        /// 指定されたニコニコユーザーIDの作者情報ダイアログを非同期で表示します
+        /// </summary>
+        /// <param name="niconicoUserId">表示するニコニコユーザーID</param>
+        /// <returns>作者情報ダイアログを開く操作をしているタスクを返します</returns>
+        public async Task<(bool isError, string message)> ShowCreatorInformationAsync(int niconicoUserId)
+        {
+            // もし、シグナル状態なら
+            if (creatorInfoShowAwaitable.IsCompleted)
+            {
+                // 非シグナル状態にしてShowCreatorInformationネイティブプラグイン関数を叩く
+                creatorInfoShowAwaitable.Reset();
+                RpgAtsumaruNativeApi.ShowCreatorInformation(niconicoUserId);
+            }
+
+
+            // シグナル状態になるまで待って結果を受け取る
+            var jsonData = await creatorInfoShowAwaitable;
+            var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
 
 
             // 結果を返す
