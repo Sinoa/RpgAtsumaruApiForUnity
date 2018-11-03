@@ -31,6 +31,12 @@ namespace RpgAtsumaruApiForUnity
 
 
         /// <summary>
+        /// ネイティブプラグインからのエラー通知を受けるコールバック関数名（引数にはエラーオブジェクトのJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string ErrorHandler;
+
+
+        /// <summary>
         /// Storage API の getItems 関数を呼び出した時の完了通知を受けるコールバック関数名（引数には取得したJSONデータを受け取る文字列型が必要です）
         /// </summary>
         public string GetItemsCallback;
@@ -52,6 +58,12 @@ namespace RpgAtsumaruApiForUnity
         /// Volume API の changed.subscrive 関数に登録したオブザーバの値を受けった通知を受けるコールバック関数名（引数には音量を受け取るfloat型が必要です）
         /// </summary>
         public string VolumeChangedCallback;
+
+
+        /// <summary>
+        /// OpenLink API の openLink 関数を呼び出した時の完了通知を受けるコールバック関数名
+        /// </summary>
+        public string OpenLinkCallback;
     }
 
 
@@ -127,5 +139,13 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         [DllImport("__Internal")]
         public static extern void StopVolumeListen();
+
+
+        /// <summary>
+        /// RPGアツマールのURLを開くポップアップを表示します。
+        /// </summary>
+        /// <param name="url">開いてほしいURL</param>
+        [DllImport("__Internal")]
+        public static extern void OpenLink(string url);
     }
 }

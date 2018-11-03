@@ -172,10 +172,12 @@ namespace RpgAtsumaruApiForUnity
             {
                 // オブジェクト名や、コールバック名を設定していく
                 UnityObjectName = CallbackReceiverGameObjectName,
+                ErrorHandler = nameof(RpgAtsumaruApiCallbackReceiver.OnErrorReceived),
                 GetItemsCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageItemsReceived),
                 SetItemsCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageSetItemsCompleted),
                 RemoveItemCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnStorageRemoveItemCompleted),
                 VolumeChangedCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnVolumeChanged),
+                OpenLinkCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnOpenLinkCompleted),
             };
 
 
@@ -218,7 +220,12 @@ namespace RpgAtsumaruApiForUnity
         internal sealed class RpgAtsumaruApiCallbackReceiver : MonoBehaviour
         {
             /// <summary>
-            /// RPGアツマールのサーバーストレージかｒデータを受信したときのイベントです
+            /// RPGアツマールの共通エラーを受信したときのイベントです
+            /// </summary>
+            public event Action<string> ErrorReceived;
+
+            /// <summary>
+            /// RPGアツマールのサーバーストレージからデータを受信したときのイベントです
             /// </summary>
             public event Action<string> StorageItemsReceived;
 
@@ -237,6 +244,22 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<float> VolumeChanged;
 
+            /// <summary>
+            /// RPGアツマールのURLを開くポップアップの表示を完了したイベントです
+            /// </summary>
+            public event Action OpenLinkCompleted;
+
+
+
+            /// <summary>
+            /// RPGアツマールの共通エラーを受信したときのイベントを処理します
+            /// </summary>
+            /// <param name="jsonData">受信したエラーオブジェクトのjson文字列データ</param>
+            public void OnErrorReceived(string jsonData)
+            {
+                // イベントにそのまま横流し
+                ErrorReceived?.Invoke(jsonData);
+            }
 
 
             /// <summary>
@@ -278,6 +301,16 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 VolumeChanged?.Invoke(volume);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールのURLポップアップ表示をした完了イベントを処理します
+            /// </summary>
+            public void OnOpenLinkCompleted()
+            {
+                // イベントにそのまま横流し
+                OpenLinkCompleted?.Invoke();
             }
         }
         #endregion
