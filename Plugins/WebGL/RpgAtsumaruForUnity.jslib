@@ -213,7 +213,7 @@ var RpgAtsumaruApiForUnity =
     OpenLink: function(url)
     {
         // openLink APIを叩く
-        window.RPGAtsumaru.popups.openLink(url)
+        window.RPGAtsumaru.popups.openLink(Pointer_stringify(url))
             .then(function()
             {
             	// エラーは発生しなかったJSONデータを作って結果を通知する
