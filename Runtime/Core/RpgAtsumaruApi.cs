@@ -28,15 +28,34 @@ namespace RpgAtsumaruApiForUnity
         private const string CallbackReceiverGameObjectName = "__RPGATSUMARU_CALLBACK_RECEIVER__";
 
         // クラス変数宣言
+        private static RpgAtsumaruGeneral generalApi;
         private static RpgAtsumaruStorage storageApi;
         private static RpgAtsumaruVolume volumeApi;
+        private static RpgAtsumaruComment commentApi;
+        private static RpgAtsumaruController controllerApi;
+        private static RpgAtsumaruScoreboard scoreboardApi;
 
 
 
+        #region プロパティ
         /// <summary>
         /// RpgAtsumaruApiForUnity プラグインが初期化済みかどうか
         /// </summary>
         public static bool Initialized => RpgAtsumaruNativeApi.IsInitialized();
+
+
+        /// <summary>
+        /// RPGアツマールの汎用的なAPIを取得します
+        /// </summary>
+        public static RpgAtsumaruGeneral GeneralApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return generalApi;
+            }
+        }
 
 
         /// <summary>
@@ -67,6 +86,52 @@ namespace RpgAtsumaruApiForUnity
                 return volumeApi;
             }
         }
+
+
+        /// <summary>
+        /// RPGアツマールのコメントを制御するAPIを取得します
+        /// </summary>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruComment CommentApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return commentApi;
+            }
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラを制御するAPIを取得します
+        /// </summary>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruController ControllerApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return controllerApi;
+            }
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのスコアボードを制御するAPIを取得します
+        /// </summary>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruScoreboard ScoreboardApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return scoreboardApi;
+            }
+        }
+        #endregion
 
 
 
@@ -120,8 +185,12 @@ namespace RpgAtsumaruApiForUnity
 
 
             // 各APIを処理するクラスのインスタンスを生成
+            generalApi = new RpgAtsumaruGeneral(receiver);
             storageApi = new RpgAtsumaruStorage(receiver);
             volumeApi = new RpgAtsumaruVolume(receiver);
+            commentApi = new RpgAtsumaruComment(receiver);
+            controllerApi = new RpgAtsumaruController(receiver);
+            scoreboardApi = new RpgAtsumaruScoreboard(receiver);
         }
 
 
