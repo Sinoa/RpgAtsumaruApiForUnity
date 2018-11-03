@@ -48,10 +48,22 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールのURLポップアップ表示をした完了イベントを処理します
         /// </summary>
         /// <param name="result">openLink関数の実行結果を含んだjsonデータ</param>
-        public void OnOpenLinkCompleted(string result)
+        private void OnOpenLinkCompleted(string result)
         {
             // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
             openLinkAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// ゲームURLのクエリに設定された値を取得します（RPGアツマールの仕様上クエリの変数名は param1～param9 になります）
+        /// </summary>
+        /// <param name="name">取得したいクエリ名</param>
+        /// <returns>指示されたクエリ名の変数に設定された値を返します</returns>
+        public string GetQuery(string name)
+        {
+            // ネイティブプラグイン関数の結果をそのまま伝える
+            return RpgAtsumaruNativeApi.GetQuery(name);
         }
 
 

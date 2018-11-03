@@ -231,10 +231,23 @@ var RpgAtsumaruApiForUnity =
 
     // URLのクエリに設定された値を取得します（RPGアツマールの仕様上クエリの変数名は param1～param9 になります）
     // name : 取得したいクエリ名
+    // 戻り値 : 取得された値を返しますが、取得できない場合は空文字列を返します
     GetQuery: function(name)
     {
-        // クエリ列挙オブジェクトからそのまま値をもらって返す
-        return window.RPGAtsumaru.experimental.query[Pointer_stringify(name)];
+    	// C#文字列ポインタからJS文字列へ変換しクエリを取得するが、正しく取り出せていないなら
+    	var value = window.RPGAtsumaru.experimental.query[Pointer_stringify(name)];
+    	if (value == null)
+    	{
+    		// 空文字列を設定しておく
+    		value = "";
+    	}
+
+
+    	// JS文字列からC#で扱えるようにUTF8エンコードをしてポインタを返す
+    	var bufferSize = lengthBytesUTF8(value) + 1;
+    	var buffer = _malloc(bufferSize);
+    	stringToUTF8(value, buffer, bufferSize);
+    	return buffer;
     },
 };
 

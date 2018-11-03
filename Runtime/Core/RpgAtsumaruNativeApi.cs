@@ -99,6 +99,15 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="url">開いてほしいURL</param>
         [DllImport("__Internal")]
         public static extern void OpenLink(string url);
+
+
+        /// <summary>
+        /// ゲームURLのクエリに設定された値を取得します（RPGアツマールの仕様上クエリの変数名は param1～param9 になります）
+        /// </summary>
+        /// <param name="name">取得したいクエリ名</param>
+        /// <returns>指示されたクエリ名の変数に設定された値を返します</returns>
+        [DllImport("__Internal")]
+        public static extern string GetQuery(string name);
     }
 
 
