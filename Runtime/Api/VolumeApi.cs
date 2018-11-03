@@ -117,6 +117,7 @@ namespace RpgAtsumaruApiForUnity
 
         /// <summary>
         /// RPGアツマールの音量調整バーの監視を停止します。
+        /// 監視を停止しても一度表示された音量調整バーは非表示にはなりません。
         /// </summary>
         public void StopVolumeChangeListen()
         {
