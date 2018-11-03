@@ -38,6 +38,9 @@ var RpgAtsumaruApiForUnity =
 
             // displayCreatorInformationModal API
             creatorInfoShown: "", // displayCreatorInformationModal APIの通知名
+
+            // Screenshot API
+            screenshot: "", // screenshot.displayModal APIの通知名
         },
     },
 
@@ -76,6 +79,7 @@ var RpgAtsumaruApiForUnity =
         Context.unityMethodNames.volumeChanged = initParam.VolumeChangedCallback;
         Context.unityMethodNames.openLink = initParam.OpenLinkCallback;
         Context.unityMethodNames.creatorInfoShown = initParam.CreatorInfoShownCallback;
+        Context.unityMethodNames.screenshot = initParam.ScreenshotCallback;
 
 
         // 初期化済みをマーク
@@ -272,6 +276,26 @@ var RpgAtsumaruApiForUnity =
                 // 発生したエラーを包んでJSONデータを作り結果を通知する
                 var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
+            });
+    },
+
+
+    // スクリーンショットをとってTwitterに投稿するダイアログを表示します
+    Screenshot: function()
+    {
+        // スクリーンショットをとってダイアログを表示する
+        window.RPGAtsumaru.experimental.screenshot.displayModal()
+            .then(function()
+            {
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.screenshot, jsonData);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.screenshot, jsonData);
             });
     },
 };
