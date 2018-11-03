@@ -114,6 +114,40 @@ namespace RpgAtsumaruApiForUnity
 
 
     /// <summary>
+    /// RPGアツマールサーバーストレージAPIから返却される全体構造を保持する構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruSaveData
+    {
+        /// <summary>
+        /// 各データスロット毎のレコード情報
+        /// </summary>
+        public RpgAtsumaruDataRecord[] SaveDataItems;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールサーバーストレージが扱うデータスロットの構造を保持する構造体です（KeyValueではなくkeyvalueと小文字）
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruDataRecord
+    {
+        /// <summary>
+        /// データスロットのキー名
+        /// </summary>
+        public string key;
+
+
+        /// <summary>
+        /// データスロットのデータ
+        /// </summary>
+        public string value;
+    }
+
+
+
+    /// <summary>
     /// RPGアツマールのネイティブAPIとの境界になる静的クラスです
     /// </summary>
     internal static class RpgAtsumaruNativeApi

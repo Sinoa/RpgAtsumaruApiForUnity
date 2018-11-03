@@ -70,7 +70,7 @@ namespace RpgAtsumaruApiForUnity
         private void OnStorageItemsReceived(string jsonData)
         {
             // Jsonデータからセーブデータへデシリアライズしてセーブデータテーブルをクリア
-            var saveData = JsonUtility.FromJson<SaveData>(jsonData);
+            var saveData = JsonUtility.FromJson<RpgAtsumaruSaveData>(jsonData);
             saveDataTable.Clear();
 
 
@@ -169,15 +169,15 @@ namespace RpgAtsumaruApiForUnity
                 if (dirtyDataList.Count >= 1)
                 {
                     // サーバーに同期するためのデータを生成する
-                    var syncSaveData = new SaveData();
-                    syncSaveData.SaveDataItems = new DataRecord[dirtyDataList.Count];
+                    var syncSaveData = new RpgAtsumaruSaveData();
+                    syncSaveData.SaveDataItems = new RpgAtsumaruDataRecord[dirtyDataList.Count];
 
 
                     // 同期用データにダーティなデータを渡す
                     for (int i = 0; i < dirtyDataList.Count; ++i)
                     {
                         // ダーティなデータを受け取ってダーティをリセット
-                        syncSaveData.SaveDataItems[i] = new DataRecord() { key = dirtyDataList[i].Key, value = dirtyDataList[i].SaveData };
+                        syncSaveData.SaveDataItems[i] = new RpgAtsumaruDataRecord() { key = dirtyDataList[i].Key, value = dirtyDataList[i].SaveData };
                         dirtyDataList[i].ClearDirty();
                     }
 
@@ -380,40 +380,6 @@ namespace RpgAtsumaruApiForUnity
                 // 流石に負の値のスロット番号は無理
                 throw new ArgumentOutOfRangeException(nameof(slotId), "スロットIDに0未満の値が指定されました");
             }
-        }
-
-
-
-        /// <summary>
-        /// RPGアツマールサーバーストレージAPIから返却される全体構造を保持する構造体です
-        /// </summary>
-        [Serializable]
-        private struct SaveData
-        {
-            /// <summary>
-            /// 各データスロット毎のレコード情報
-            /// </summary>
-            public DataRecord[] SaveDataItems;
-        }
-
-
-
-        /// <summary>
-        /// RPGアツマールサーバーストレージが扱うデータスロットの構造を保持する構造体です（KeyValueではなくkeyvalueと小文字）
-        /// </summary>
-        [Serializable]
-        private struct DataRecord
-        {
-            /// <summary>
-            /// データスロットのキー名
-            /// </summary>
-            public string key;
-
-
-            /// <summary>
-            /// データスロットのデータ
-            /// </summary>
-            public string value;
         }
 
 
