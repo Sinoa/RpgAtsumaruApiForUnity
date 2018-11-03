@@ -39,7 +39,38 @@ namespace RpgAtsumaruApiForUnity
         public static bool Initialized => RpgAtsumaruNativeApi.IsInitialized();
 
 
+        /// <summary>
+        /// RPGアツマールのサーバーストレージを操作するAPIを取得します
+        /// </summary>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruStorage StorageApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return storageApi;
+            }
+        }
 
+
+        /// <summary>
+        /// RPGアツマールのマスター音量を制御するAPIを取得します
+        /// </summary>
+        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
+        public static RpgAtsumaruVolume VolumeApi
+        {
+            get
+            {
+                // 例外判定を入れてからAPIのインスタンスを返す
+                ThrowIfNotInitialized();
+                return volumeApi;
+            }
+        }
+
+
+
+        #region 初期化＆汎用ロジック
         /// <summary>
         /// RPGアツマールAPIの初期化を行います。
         /// あらゆるAPIを呼び出す前に必ず一度だけ呼び出してください。
@@ -95,32 +126,6 @@ namespace RpgAtsumaruApiForUnity
 
 
         /// <summary>
-        /// RPGアツマールのサーバーストレージを操作するAPIを取得します
-        /// </summary>
-        /// <returns>サーバーストレージ操作APIのインスタンスを返します</returns>
-        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
-        public static RpgAtsumaruStorage GetStorageApi()
-        {
-            // 例外判定を入れてからAPIのインスタンスを返す
-            ThrowIfNotInitialized();
-            return storageApi;
-        }
-
-
-        /// <summary>
-        /// RPGアツマールのマスター音量を制御するAPIを取得します
-        /// </summary>
-        /// <returns>マスター音量制御APIのインスタンスを返します</returns>
-        /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
-        public static RpgAtsumaruVolume GetVolumeApi()
-        {
-            // 例外判定を入れてからAPIのインスタンスを返す
-            ThrowIfNotInitialized();
-            return volumeApi;
-        }
-
-
-        /// <summary>
         /// プラグインが未初期化の場合に例外をスローします
         /// </summary>
         /// <exception cref="InvalidOperationException">プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください</exception>
@@ -133,9 +138,11 @@ namespace RpgAtsumaruApiForUnity
                 throw new InvalidOperationException("プラグインが初期化されていません。Initialize関数を呼び出して初期化を完了してください");
             }
         }
+        #endregion
 
 
 
+        #region レシーバコンポーネントクラスの実装
         /// <summary>
         /// RPGアツマールネイティブAPIからのコールバックを受け付けるレシーバコンポーネントクラスです
         /// </summary>
@@ -204,5 +211,6 @@ namespace RpgAtsumaruApiForUnity
                 VolumeChanged?.Invoke(volume);
             }
         }
+        #endregion
     }
 }
