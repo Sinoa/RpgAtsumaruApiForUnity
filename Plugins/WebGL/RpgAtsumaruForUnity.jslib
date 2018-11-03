@@ -216,8 +216,8 @@ var RpgAtsumaruApiForUnity =
         window.RPGAtsumaru.popups.openLink(Pointer_stringify(url))
             .then(function()
             {
-            	// エラーは発生しなかったJSONデータを作って結果を通知する
-            	var jsonData = JSON.stringify({ErrorOccured:false});
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false});
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
             })
             .catch(function(error)
@@ -226,6 +226,15 @@ var RpgAtsumaruApiForUnity =
                 var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
             });
+    },
+
+
+    // URLのクエリに設定された値を取得します（RPGアツマールの仕様上クエリの変数名は param1～param9 になります）
+    // name : 取得したいクエリ名
+    GetQuery: function(name)
+    {
+        // クエリ列挙オブジェクトからそのまま値をもらって返す
+        return window.RPGAtsumaru.experimental.query[Pointer_stringify(name)];
     },
 };
 
