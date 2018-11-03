@@ -35,6 +35,9 @@ var RpgAtsumaruApiForUnity =
 
             // OpenLink API
             openLink: "", // openLink APIの通知名
+
+            // displayCreatorInformationModal API
+            creatorInfoShown: "", // displayCreatorInformationModal APIの通知名
         },
     },
 
@@ -72,6 +75,7 @@ var RpgAtsumaruApiForUnity =
         Context.unityMethodNames.removeItem = initParam.RemoveItemCallback;
         Context.unityMethodNames.volumeChanged = initParam.VolumeChangedCallback;
         Context.unityMethodNames.openLink = initParam.OpenLinkCallback;
+        Context.unityMethodNames.creatorInfoShown = initParam.CreatorInfoShownCallback;
 
 
         // 初期化済みをマーク
@@ -234,20 +238,41 @@ var RpgAtsumaruApiForUnity =
     // 戻り値 : 取得された値を返しますが、取得できない場合は空文字列を返します
     GetQuery: function(name)
     {
-    	// C#文字列ポインタからJS文字列へ変換しクエリを取得するが、正しく取り出せていないなら
-    	var value = window.RPGAtsumaru.experimental.query[Pointer_stringify(name)];
-    	if (value == null)
-    	{
-    		// 空文字列を設定しておく
-    		value = "";
-    	}
+        // C#文字列ポインタからJS文字列へ変換しクエリを取得するが、正しく取り出せていないなら
+        var value = window.RPGAtsumaru.experimental.query[Pointer_stringify(name)];
+        if (value == null)
+        {
+            // 空文字列を設定しておく
+            value = "";
+        }
 
 
-    	// JS文字列からC#で扱えるようにUTF8エンコードをしてポインタを返す
-    	var bufferSize = lengthBytesUTF8(value) + 1;
-    	var buffer = _malloc(bufferSize);
-    	stringToUTF8(value, buffer, bufferSize);
-    	return buffer;
+        // JS文字列からC#で扱えるようにUTF8エンコードをしてポインタを返す
+        var bufferSize = lengthBytesUTF8(value) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(value, buffer, bufferSize);
+        return buffer;
+    },
+
+
+    // 指定されたニコニコユーザーIDの作者情報ダイアログを表示します
+    // niconicoUserId : 表示するニコニコユーザーID
+    ShowCreatorInformation: function(niconicoUserId)
+    {
+        // 作者情報ダイアログを表示する
+        window.RPGAtsumaru.experimental.popups.displayCreatorInformationModal(niconicoUserId)
+            .then(function()
+            {
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.creatorInfoShown, jsonData);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink, jsonData);
+            });
     },
 };
 
