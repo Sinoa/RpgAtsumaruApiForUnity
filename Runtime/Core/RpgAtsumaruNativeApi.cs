@@ -13,13 +13,15 @@
 // 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
+#pragma warning disable 649
+
 using System;
 using System.Runtime.InteropServices;
 
 namespace RpgAtsumaruApiForUnity
 {
     /// <summary>
-    /// ネイティブプラグインを初期化する為のパラメータを定義した構造体です。
+    /// ネイティブプラグインを初期化する為のパラメータを定義した構造体です
     /// </summary>
     [Serializable]
     internal struct RptAtsumaruNativeApiInitializeParameter
@@ -64,6 +66,49 @@ namespace RpgAtsumaruApiForUnity
         /// OpenLink API の openLink 関数を呼び出した時の完了通知を受けるコールバック関数名
         /// </summary>
         public string OpenLinkCallback;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールの共通エラーオブジェクトのパラメータを定義した構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruApiErrorParameter
+    {
+        /// <summary>
+        /// APIの呼び出し方に問題が発生しています。ネイティブプラグインの実装に問題が無いか確認してください。
+        /// </summary>
+        public const string ErrorCodeBadRequest = "BAD_REQUEST";
+
+        /// <summary>
+        /// ユーザーのログイン情報が必要なAPIを、非ログイン状態で呼び出しています。
+        /// </summary>
+        public const string ErrorCodeUnauthorized = "UNAUTHORIZED";
+
+        /// <summary>
+        /// RPGアツマールサーバーに問題が発生しました。しばらく時間を置いてから再度実行を試みてください。
+        /// </summary>
+        public const string ErrorCodeInternalServerError = "INTERNAL_SERVER_ERROR";
+
+
+
+        /// <summary>
+        /// APIのエラータイプ
+        /// </summary>
+        public string errorType;
+
+
+        /// <summary>
+        /// エラーコード
+        /// </summary>
+        public string code;
+
+
+        /// <summary>
+        /// エラーメッセージ
+        /// </summary>
+        public string message;
     }
 
 
