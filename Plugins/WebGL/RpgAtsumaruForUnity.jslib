@@ -25,6 +25,9 @@ var RpgAtsumaruApiForUnity =
         volumeSubscription: null, // 音量APIのサブスクリプション参照
         unityMethodNames:         // 非同期的にUnityへ通知するための各種メソッド名
         {
+            // Error
+            errorHandler: "", // APIエラーハンドラ名
+
             // Storage API
             getItems: "",   // getItems APIの通知名
             setItems: "",   // setItems APIの通知名
@@ -32,7 +35,20 @@ var RpgAtsumaruApiForUnity =
 
             // Volume API
             volumeChanged: "", // changed APIの通知名
+
+            // OpenLink API
+            openLink: "", // openLink APIの通知名
         },
+    },
+
+
+    // 各APIの共通エラーをUnityへ送信します
+    // error : 発生したエラーの内容（APIのエラーオブジェクトをそのまま渡してください）
+    $SendError: function(error)
+    {
+        // エラー内容をJSON化して送る
+        var jsonData = JSON.stringify(error);
+        SendMessage(Context.unityObjectName, Context.unityMethodNames.errorHandler, jsonData);
     },
 
 
@@ -64,10 +80,12 @@ var RpgAtsumaruApiForUnity =
 
         // コンテキストを初期化していく
         Context.unityObjectName = initParam.UnityObjectName;
+        Context.unityMethodNames.errorHandler = initParam.ErrorHandler;
         Context.unityMethodNames.getItems = initParam.GetItemsCallback;
         Context.unityMethodNames.setItems = initParam.SetItemsCallback;
         Context.unityMethodNames.removeItem = initParam.RemoveItemCallback;
         Context.unityMethodNames.volumeChanged = initParam.VolumeChangedCallback;
+        Context.unityMethodNames.openLink = initParam.OpenLinkCallback;
 
 
         // 初期化済みをマーク
@@ -158,55 +176,75 @@ var RpgAtsumaruApiForUnity =
     // 戻り値 : 正規化された現在のマスターボリュームを返します
     GetCurrentVolume: function()
     {
-    	// この関数は素直にバイパスするだけで、現在のボリューム値をそのまま返す
-    	return window.RPGAtsumaru.volume.getCurrentValue();
+        // この関数は素直にバイパスするだけで、現在のボリューム値をそのまま返す
+        return window.RPGAtsumaru.volume.getCurrentValue();
     },
 
 
     // RPGアツマールの音量変化通知を受け取るリスンを開始します
     StartVolumeListen: function()
     {
-    	// 未初期化 または 既に購読している なら
-    	if (!Context.initialized || Context.volumeSubscription != null)
-    	{
+        // 未初期化 または 既に購読している なら
+        if (!Context.initialized || Context.volumeSubscription != null)
+        {
             // 直ちに終了する（応答するにも応答先を知らない）
             return;
-    	}
+        }
 
 
-    	// 音量変化を購読する
-    	Context.volumeSubscription = window.RPGAtsumaru.volume.changed.subscribe({
-    		next: function(volume)
-    		{
-    			// Unityに変化した音量を通知する
-    			SendMessage(Context.unityObjectName, Context.unityMethodNames.volumeChanged, volume);
-    		},
-			error: function(err) {},
-			complete: function() {},
-    	});
+        // 音量変化を購読する
+        Context.volumeSubscription = window.RPGAtsumaru.volume.changed.subscribe({
+            next: function(volume)
+            {
+                // Unityに変化した音量を通知する
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.volumeChanged, volume);
+            },
+            error: function(err) {},
+            complete: function() {},
+        });
     },
 
 
     // RPGアツマールの音量変化通知を受け取るリスンを停止します
     StopVolumeListen: function()
     {
-    	// 未初期化 または 購読していない なら
-    	if (!Context.initialized || Context.volumeSubscription == null)
-    	{
+        // 未初期化 または 購読していない なら
+        if (!Context.initialized || Context.volumeSubscription == null)
+        {
             // 直ちに終了する（応答するにも応答先を知らない）
             return;
-    	}
+        }
 
 
-    	// 購読を停止する
-    	Context.volumeSubscription.unsubscribe();
-    	Context.volumeSubscription = null;
+        // 購読を停止する
+        Context.volumeSubscription.unsubscribe();
+        Context.volumeSubscription = null;
+    },
+
+
+    // RPGアツマール側で外部URLを開くポップアップを表示します
+    // url : 開きたい外部URL
+    OpenLink: function(url)
+    {
+        // openLink APIを叩く
+        window.RPGAtsumaru.popups.openLink(url)
+            .then(function()
+            {
+                // UnityにopenUrlを操作した通知をする
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.openLink);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを送信する
+                SendError(error);
+            });
     },
 };
 
 
 // 内部依存定義の追加
 autoAddDeps(RpgAtsumaruApiForUnity, "$Context");
+autoAddDeps(RpgAtsumaruApiForUnity, "$SendError");
 
 
 // Unityライブラリにライブラリオブジェクトを登録
