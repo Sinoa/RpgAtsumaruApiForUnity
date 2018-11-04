@@ -469,8 +469,57 @@ var RpgAtsumaruApiForUnity =
         window.RPGAtsumaru.experimental.scoreboards.getRecords(boardId)
             .then(function(scoreboardData)
             {
+                // スコアボードのデータをC#で扱えるように調整した変数を宣言
+                var csScoreboardData = {};
+                csScoreboardData.boardId = scoreboardData.boardId;
+                csScoreboardData.boardName = scoreboardData.boardName;
+
+
+                // マイレコードが存在するなら
+                if (scoreboardData.myRecord != null)
+                {
+                    // 有効なデータが存在するとマークをしてデータを詰める
+                    csScoreboardData.myRecord.Available = true;
+                    csScoreboardData.myRecord.rank = scoreboardData.myRecord.rank;
+                    csScoreboardData.myRecord.score = scoreboardData.myRecord.score;
+                    csScoreboardData.myRecord.isNewRecord = scoreboardData.myRecord.isNewRecord;
+                }
+                else
+                {
+                    // 有効なデータが存在しないことをマークする
+                    csScoreboardData.myRecord.Available = false;
+                }
+
+
+                // 自己ベストレコードが存在するなら
+                if (scoreboardData.myBestRecord != null)
+                {
+                    // 有効なデータが存在するマークをしてデータを詰める
+                    csScoreboardData.myBestRecord.Available = true;
+                    csScoreboardData.myBestRecord.userName = scoreboardData.myBestRecord.userName;
+                    csScoreboardData.myBestRecord.rank = scoreboardData.myBestRecord.rank;
+                    csScoreboardData.myBestRecord.score = scoreboardData.myBestRecord.score;
+                }
+                else
+                {
+                    // 有効なデータが存在しないことをマークする
+                    csScoreboardData.myBestRecord.Available = false;
+                }
+
+
+                // ランキングデータがあろうとなかろうと空配列を定義して長さ分ループ
+                csScoreboardData.ranking = [];
+                for (var i = 0; i < scoreboardData.ranking.length; ++i)
+                {
+                    // ランキング配列に詰めていく
+                    csScoreboardData.ranking[i].rank = scoreboardData.ranking[i].rank;
+                    csScoreboardData.ranking[i].userName = scoreboardData.ranking[i].userName;
+                    csScoreboardData.ranking[i].score = scoreboardData.ranking[i].score;
+                }
+
+
                 // エラーは発生しなかったJSONデータを作って結果を通知する
-                var jsonData = JSON.stringify({ErrorOccured:false,ScoreboardData:scoreboardData});
+                var jsonData = JSON.stringify({ErrorOccured:false,ScoreboardData:csScoreboardData});
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.getScore, jsonData);
             })
             .catch(function(error)
