@@ -43,6 +43,11 @@ var RpgAtsumaruApiForUnity =
 
             // Screenshot API
             screenshot: "", // screenshot.displayModal APIの通知名
+
+            // Scoreboard API
+            scoreDisplay: "", // scoreboards.display APIの通知名
+            setScore: "",     // scoreboards.setRecord APIの通知名
+            getScore: "",     // scoreboards.getRecords APIの通知名
         },
     },
 
@@ -82,6 +87,9 @@ var RpgAtsumaruApiForUnity =
         Context.unityMethodNames.openLink = initParam.OpenLinkCallback;
         Context.unityMethodNames.creatorInfoShown = initParam.CreatorInfoShownCallback;
         Context.unityMethodNames.screenshot = initParam.ScreenshotCallback;
+        Context.unityMethodNames.scoreDisplay = initParam.ScoreboardShownCallback;
+        Context.unityMethodNames.setScore = initParam.SetScoreCallback;
+        Context.unityMethodNames.getScore = initParam.GetScoreCallback;
 
 
         // 初期化済みをマーク
@@ -407,6 +415,70 @@ var RpgAtsumaruApiForUnity =
     {
         // 入力状態をそのまま返す
         return Context.inputPress;
+    },
+
+
+    // RPGアツマール上に指定されたスコアボードを表示します
+    // boardId : 表示したいボードID（RPGアツマールの仕様上 1 ～ 10 までです）
+    ShowScoreBoard: function(boardId)
+    {
+        // スコアボードを表示する
+        window.RPGAtsumaru.experimental.scoreboards.display(boardId)
+            .then(function()
+            {
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.scoreDisplay, jsonData);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.scoreDisplay, jsonData);
+            });
+    },
+
+
+    // 指定されたスコアボードにスコアを送信します
+    // boardId : 送信する先のスコアボードID
+    // score : 送信するスコア
+    SendScoreRecord: function(boardId, score)
+    {
+        // スコアボードにスコアを送る
+        window.RPGAtsumaru.experimental.scoreboards.setRecord(boardId, score)
+            .then(function()
+            {
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.setScore, jsonData);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.setScore, jsonData);
+            });
+    },
+
+
+    // 指定されたスコアボードからスコア情報を取得します
+    // boardId : スコア情報を取得したいスコアボードID
+    GetScoreRecord: function(boardId)
+    {
+        // スコアボードからスコア情報を取得する
+        window.RPGAtsumaru.experimental.scoreboards.getRecords(boardId)
+            .then(function(scoreboardData)
+            {
+                // エラーは発生しなかったJSONデータを作って結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:false,ScoreboardData:scoreboardData});
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.getScore, jsonData);
+            })
+            .catch(function(error)
+            {
+                // 発生したエラーを包んでJSONデータを作り結果を通知する
+                var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.setScore, jsonData);
+            });
     },
 };
 
