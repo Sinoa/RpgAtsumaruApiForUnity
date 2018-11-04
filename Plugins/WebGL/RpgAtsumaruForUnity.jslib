@@ -419,7 +419,7 @@ var RpgAtsumaruApiForUnity =
 
 
     // RPGアツマール上に指定されたスコアボードを表示します
-    // boardId : 表示したいボードID（RPGアツマールの仕様上 1 ～ 10 までです）
+    // boardId : 表示したいボードID（RPGアツマールの仕様上 1 ～ 10 までです（10個以上の場合は管理ページから上限を指定できます））
     ShowScoreBoard: function(boardId)
     {
         // スコアボードを表示する
