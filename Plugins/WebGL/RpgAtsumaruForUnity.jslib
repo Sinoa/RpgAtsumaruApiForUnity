@@ -476,6 +476,7 @@ var RpgAtsumaruApiForUnity =
 
 
                 // マイレコードが存在するなら
+                csScoreboardData.myRecord = {};
                 if (scoreboardData.myRecord != null)
                 {
                     // 有効なデータが存在するとマークをしてデータを詰める
@@ -492,6 +493,7 @@ var RpgAtsumaruApiForUnity =
 
 
                 // 自己ベストレコードが存在するなら
+                csScoreboardData.myBestRecord = {};
                 if (scoreboardData.myBestRecord != null)
                 {
                     // 有効なデータが存在するマークをしてデータを詰める
