@@ -315,7 +315,6 @@ var RpgAtsumaruApiForUnity =
 
 
         // コントローラの入力状態を初期化する
-        Context.inputBuffer = 0;
         Context.inputPress = 0;
 
 
@@ -393,7 +392,6 @@ var RpgAtsumaruApiForUnity =
 
 
         // コントローラの入力状態を初期化する
-        Context.inputBuffer = 0;
         Context.inputPress = 0;
 
 
@@ -405,7 +403,7 @@ var RpgAtsumaruApiForUnity =
 
     // RPGアツマールのコントローラ入力状態を取得します
     // 入力状態を取得する前に必ず StartControllerListen() 関数で入力状態をリスンしてください
-    GetInputState(): function()
+    GetInputState: function()
     {
         // 入力状態をそのまま返す
         return Context.inputPress;
