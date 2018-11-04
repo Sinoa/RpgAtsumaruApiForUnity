@@ -13,6 +13,10 @@
 // 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
+using System.Threading.Tasks;
+using IceMilkTea.Core;
+using UnityEngine;
+
 namespace RpgAtsumaruApiForUnity
 {
     /// <summary>
@@ -20,12 +24,142 @@ namespace RpgAtsumaruApiForUnity
     /// </summary>
     public class RpgAtsumaruScoreboard
     {
+        // メンバ変数定義
+        private ImtAwaitableManualReset<string> scoreboardShowAwaitable;
+        private ImtAwaitableManualReset<string> scoreboardSendAwaitable;
+        private ImtAwaitableManualReset<string> scoreboardReceivedAwaitable;
+
+
+
         /// <summary>
         /// RpgAtsumaruScoreboard のインスタンスを初期化します
         /// </summary>
         /// <param name="receiver">RPGアツマールネイティブAPIコールバックを拾うレシーバ</param>
         internal RpgAtsumaruScoreboard(RpgAtsumaruApi.RpgAtsumaruApiCallbackReceiver receiver)
         {
+            // レシーバにイベントを登録する
+            receiver.ScoreboardShown += OnScoreboardShown;
+            receiver.ScoreSendCompleted += OnScoreSendCompleted;
+            receiver.ScoreboardReceived += OnScoreboardReceived;
+
+
+            // マニュアルリセット待機可能オブジェクトをシグナル状態で生成する
+            scoreboardShowAwaitable = new ImtAwaitableManualReset<string>(true);
+            scoreboardSendAwaitable = new ImtAwaitableManualReset<string>(true);
+            scoreboardReceivedAwaitable = new ImtAwaitableManualReset<string>(true);
+        }
+
+
+        /// <summary>
+        /// RPGアツマール上にスコアボードの表示の完了イベントを処理します
+        /// </summary>
+        /// <param name="result">scoreboards.display関数の実行結果を含んだjsonデータ</param>
+        private void OnScoreboardShown(string result)
+        {
+            // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
+            scoreboardShowAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールスコアボードにスコアを送信完了したイベントを処理します
+        /// </summary>
+        /// <param name="result">scoreboards.setRecord関数の実行結果を含んだjsonデータ</param>
+        private void OnScoreSendCompleted(string result)
+        {
+            // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
+            scoreboardSendAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールスコアボードからスコアデータの受信完了したイベントを処理します
+        /// </summary>
+        /// <param name="result">scoreboards.getRecords関数の実行結果を含んだjsonデータ</param>
+        private void OnScoreboardReceived(string result)
+        {
+            // 待機オブジェクトに送られてきたjsonデータ付きでシグナルを設定する
+            scoreboardReceivedAwaitable.Set(result);
+        }
+
+
+        /// <summary>
+        /// RPGアツマール上に指定されたスコアボードを非同期に表示します。
+        /// RPGアツマールの仕様上、既定は 1 ～ 10 までです。10個以上の場合は管理ページから上限を指定できます。
+        /// </summary>
+        /// <param name="boardId">表示したいスコアボードID</param>
+        /// <returns>スコアボードを表示する操作タスクを返します</returns>
+        public async Task<(bool isError, string message)> ShowScoreboardAsync(int boardId)
+        {
+            // もし、シグナル状態なら
+            if (scoreboardShowAwaitable.IsCompleted)
+            {
+                // 非シグナル状態にしてネイティブプラグイン関数を叩く
+                scoreboardShowAwaitable.Reset();
+                RpgAtsumaruNativeApi.ShowScoreBoard(boardId);
+            }
+
+
+            // シグナル状態になるまで待って結果を受け取る
+            var jsonData = await scoreboardShowAwaitable;
+            var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
+
+
+            // 結果を返す
+            return (result.ErrorOccured, result.Error.message);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールの指定されたスコアボードにスコアを非同期に送信します
+        /// </summary>
+        /// <param name="boardId">送信する先のスコアボードID</param>
+        /// <param name="score">送信するスコア</param>
+        /// <returns>スコアを送信する操作タスクを返します</returns>
+        public async Task<(bool isError, string message)> SendScoreAsync(int boardId, long score)
+        {
+            // もし、シグナル状態なら
+            if (scoreboardSendAwaitable.IsCompleted)
+            {
+                // 非シグナル状態にしてネイティブプラグイン関数を叩く
+                scoreboardSendAwaitable.Reset();
+                RpgAtsumaruNativeApi.SendScoreRecord(boardId, score);
+            }
+
+
+            // シグナル状態になるまで待って結果を受け取る
+            var jsonData = await scoreboardSendAwaitable;
+            var result = JsonUtility.FromJson<RpgAtsumaruBasicResult>(jsonData);
+
+
+            // 結果を返す
+            return (result.ErrorOccured, result.Error.message);
+        }
+
+
+        /// <summary>
+        /// RPGアツマールの指定されたスコアボードからスコアボードデータを非同期に取得します
+        /// </summary>
+        /// <param name="boardId">取得したいスコアボードID</param>
+        /// <returns>スコアボードの取得をする操作タスクを返します</returns>
+        public async Task<(bool isError, string message, RpgAtsumaruScoreboardData scoreboard)> GetScoreboardAsync(int boardId)
+        {
+            // もし、シグナル状態なら
+            if (scoreboardReceivedAwaitable.IsCompleted)
+            {
+                // 非シグナル状態にしてネイティブプラグイン関数を叩く
+                scoreboardReceivedAwaitable.Reset();
+                RpgAtsumaruNativeApi.GetScoreRecord(boardId);
+            }
+
+
+            // シグナル状態になるまで待って結果を受け取る
+            var jsonData = await scoreboardReceivedAwaitable;
+            var result = JsonUtility.FromJson<RpgAtsumaruScoreboardResult>(jsonData);
+
+
+            // 結果を返す
+            return (result.ErrorOccured, result.Error.message, result.ScoreboardData);
         }
     }
 }
