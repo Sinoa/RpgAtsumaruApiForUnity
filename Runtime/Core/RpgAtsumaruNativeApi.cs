@@ -148,6 +148,31 @@ namespace RpgAtsumaruApiForUnity
         /// <returns></returns>
         [DllImport("__Internal")]
         public static extern uint GetInputState();
+
+
+        /// <summary>
+        /// RPGアツマール上に指定されたスコアボードを表示します
+        /// </summary>
+        /// <param name="boardId">表示したいボードID（RPGアツマールの仕様上、既定は 1 ～ 10 までです（10個以上の場合は管理ページから上限を指定できます））</param>
+        [DllImport("__Internal")]
+        public static extern void ShowScoreBoard(int boardId);
+
+
+        /// <summary>
+        /// RPGアツマールスコアボードに指定されたスコアを送信します
+        /// </summary>
+        /// <param name="boardId">送信する先のスコアボードID（RPGアツマールの仕様上、既定は 1 ～ 10 までです（10個以上の場合は管理ページから上限を指定できます））</param>
+        /// <param name="score">送信するスコア</param>
+        [DllImport("__Internal")]
+        public static extern void SendScoreRecord(int boardId, long score);
+
+
+        /// <summary>
+        /// RPGアツマールスコアボードから指定されたスコアボードのスコア情報を取得します
+        /// </summary>
+        /// <param name="boardId">スコア情報を取得したいスコアボードID（RPGアツマールの仕様上、既定は 1 ～ 10 までです（10個以上の場合は管理ページから上限を指定できます））</param>
+        [DllImport("__Internal")]
+        public static extern void GetScoreRecord(int boardId);
     }
 
 
@@ -243,6 +268,24 @@ namespace RpgAtsumaruApiForUnity
         /// Screenshot API の screenshot.displayModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
         /// </summary>
         public string ScreenshotCallback;
+
+
+        /// <summary>
+        /// Scoreboard API の scoreboards.display 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string ScoreboardShownCallback;
+
+
+        /// <summary>
+        /// Scoreboard API の scoreboards.setRecord 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string SetScoreCallback;
+
+
+        /// <summary>
+        /// Scoreboard API の scoreboards.getRecords 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかまたは、スコアボードのデータを含むJSONデータを受ける文字列型が必要です）
+        /// </summary>
+        public string GetScoreCallback;
     }
 
 
@@ -384,7 +427,7 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// 今回のスコア
         /// </summary>
-        public int score;
+        public long score;
 
 
         /// <summary>
@@ -423,7 +466,7 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// 自己ベストのスコア
         /// </summary>
-        public int score;
+        public long score;
     }
 
 
@@ -449,7 +492,7 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// このランクのスコア
         /// </summary>
-        public int score;
+        public long score;
     }
 
 

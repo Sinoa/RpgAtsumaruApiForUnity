@@ -179,6 +179,9 @@ namespace RpgAtsumaruApiForUnity
                 OpenLinkCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnOpenLinkCompleted),
                 CreatorInfoShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnCreatorInfoShown),
                 ScreenshotCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScreenshotCompleted),
+                ScoreboardShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreboardShown),
+                SetScoreCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreSendCompleted),
+                GetScoreCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreboardReceived),
             };
 
 
@@ -255,6 +258,21 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<string> ScreenshotCompleted;
 
+            /// <summary>
+            /// RPGアツマール上にスコアボードの表示を完了したイベントです
+            /// </summary>
+            public event Action<string> ScoreboardShown;
+
+            /// <summary>
+            /// RPGアツマールスコアボードにスコアの送信が完了したイベントです
+            /// </summary>
+            public event Action<string> ScoreSendCompleted;
+
+            /// <summary>
+            /// RPGアツマールスコアボードのスコアデータを受信したイベントです
+            /// </summary>
+            public event Action<string> ScoreboardReceived;
+
 
 
             /// <summary>
@@ -329,6 +347,39 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 ScreenshotCompleted?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマール上にスコアボードの表示の完了イベントを処理します
+            /// </summary>
+            /// <param name="result">scoreboards.display関数の実行結果を含んだjsonデータ</param>
+            public void OnScoreboardShown(string result)
+            {
+                // イベントにそのまま横流し
+                ScoreboardShown?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールスコアボードにスコアを送信完了したイベントを処理します
+            /// </summary>
+            /// <param name="result">scoreboards.setRecord関数の実行結果を含んだjsonデータ</param>
+            public void OnScoreSendCompleted(string result)
+            {
+                // イベントにそのまま横流し
+                ScoreSendCompleted?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールスコアボードからスコアデータの受信完了したイベントを処理します
+            /// </summary>
+            /// <param name="result">scoreboards.getRecords関数の実行結果を含んだjsonデータ</param>
+            public void OnScoreboardReceived(string result)
+            {
+                // イベントにそのまま横流し
+                ScoreboardReceived?.Invoke(result);
             }
         }
         #endregion
