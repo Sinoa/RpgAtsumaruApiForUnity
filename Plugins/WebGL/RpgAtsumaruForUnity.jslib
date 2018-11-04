@@ -510,10 +510,11 @@ var RpgAtsumaruApiForUnity =
 
 
                 // ランキングデータがあろうとなかろうと空配列を定義して長さ分ループ
-                csScoreboardData.ranking = [];
+                csScoreboardData.ranking = new Array(scoreboardData.ranking.length);
                 for (var i = 0; i < scoreboardData.ranking.length; ++i)
                 {
                     // ランキング配列に詰めていく
+                    csScoreboardData.ranking[i] = {};
                     csScoreboardData.ranking[i].rank = scoreboardData.ranking[i].rank;
                     csScoreboardData.ranking[i].userName = scoreboardData.ranking[i].userName;
                     csScoreboardData.ranking[i].score = scoreboardData.ranking[i].score;
