@@ -325,6 +325,136 @@ namespace RpgAtsumaruApiForUnity
 
 
     /// <summary>
+    /// RPGアツマールのスコアボードのデータ構造を表す構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruScoreboardData
+    {
+        /// <summary>
+        /// スコアボードID
+        /// </summary>
+        public int boardId;
+
+
+        /// <summary>
+        /// スコアボードの名前
+        /// </summary>
+        public string boardName;
+
+
+        /// <summary>
+        /// 今回取得した自身のスコアデータ
+        /// </summary>
+        public RpgAtsumaruMyRecord myRecord;
+
+
+        /// <summary>
+        /// このスコアボードにおける自己ベストのデータ
+        /// </summary>
+        public RpgAtsumaruMyBestRecord myBestRecor;
+
+
+        /// <summary>
+        /// このスコアボードのランキングデータ
+        /// </summary>
+        public RpgAtsumaruRanking[] ranking;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールの今回取得したスコアレコードを持つ構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruMyRecord
+    {
+        /// <summary>
+        /// データが利用可能かどうか。
+        /// 利用不可の場合は、他の値が有効な値として取れない可能性に注意してください
+        /// </summary>
+        public bool Available;
+
+
+        /// <summary>
+        /// 今回のスコアにおけるランキング
+        /// </summary>
+        public int rank;
+
+
+        /// <summary>
+        /// 今回のスコア
+        /// </summary>
+        public int score;
+
+
+        /// <summary>
+        /// 今回のスコアがベストレコードかどうか
+        /// </summary>
+        public bool isNewRecord;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールのスコアボードで事故ベストレコードデータを持つ構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruMyBestRecord
+    {
+        /// <summary>
+        /// データが利用可能かどうか
+        /// 利用不可の場合は、他の値が有効な値として取れない可能性に注意してください
+        /// </summary>
+        public bool Available;
+
+
+        /// <summary>
+        /// ベストレコード記録時のユーザー名
+        /// </summary>
+        public string userName;
+
+
+        /// <summary>
+        /// 自己ベストのランキング
+        /// </summary>
+        public int rank;
+
+
+        /// <summary>
+        /// 自己ベストのスコア
+        /// </summary>
+        public int score;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールのスコアボードでランキングデータを持つ構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruRanking
+    {
+        /// <summary>
+        /// このランクのユーザー名
+        /// </summary>
+        public string userName;
+
+
+        /// <summary>
+        /// このランクのランキング
+        /// </summary>
+        public int rank;
+
+
+        /// <summary>
+        /// このランクのスコア
+        /// </summary>
+        public int score;
+    }
+
+
+
+    /// <summary>
     /// RPGアツマールのPromise[void]な関数を実行した際の結果を表す構造体です
     /// </summary>
     [Serializable]
@@ -340,5 +470,31 @@ namespace RpgAtsumaruApiForUnity
         /// エラーが発生した場合のエラー情報
         /// </summary>
         public RpgAtsumaruApiError Error;
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールのPromise[ScoreboardData]な関数を実行した際の結果を表す構造体です
+    /// </summary>
+    [Serializable]
+    internal struct RpgAtsumaruScoreboardResult
+    {
+        /// <summary>
+        /// エラーが発生したかどうか
+        /// </summary>
+        public bool ErrorOccured;
+
+
+        /// <summary>
+        /// エラーが発生した場合のエラー情報
+        /// </summary>
+        public RpgAtsumaruApiError Error;
+
+
+        /// <summary>
+        /// 正常に取得出来た場合のスコアボードデータ
+        /// </summary>
+        public RpgAtsumaruScoreboardData ScoreboardData;
     }
 }
