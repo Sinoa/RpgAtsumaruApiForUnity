@@ -221,11 +221,6 @@ namespace RpgAtsumaruApiForUnity
         internal sealed class RpgAtsumaruApiCallbackReceiver : MonoBehaviour
         {
             /// <summary>
-            /// RPGアツマールの共通エラーを受信したときのイベントです
-            /// </summary>
-            public event Action<string> ErrorReceived;
-
-            /// <summary>
             /// RPGアツマールのサーバーストレージからデータを受信したときのイベントです
             /// </summary>
             public event Action<string> StorageItemsReceived;
@@ -260,17 +255,6 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<string> ScreenshotCompleted;
 
-
-
-            /// <summary>
-            /// RPGアツマールの共通エラーを受信したときのイベントを処理します
-            /// </summary>
-            /// <param name="jsonData">受信したエラーオブジェクトのjson文字列データ</param>
-            public void OnErrorReceived(string jsonData)
-            {
-                // イベントにそのまま横流し
-                ErrorReceived?.Invoke(jsonData);
-            }
 
 
             /// <summary>
