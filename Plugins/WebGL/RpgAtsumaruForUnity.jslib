@@ -20,10 +20,12 @@ var RpgAtsumaruApiForUnity =
     // プラグインの状態を保持するコンテキストテーブルです
     $Context:
     {
-        initialized: false,       // プラグインが初期化されたかどうか
-        unityObjectName: "",      // 非同期操作時にUnityへ通知するためのゲームオブジェクト名
-        volumeSubscription: null, // 音量APIのサブスクリプション参照
-        unityMethodNames:         // 非同期的にUnityへ通知するための各種メソッド名
+        initialized: false,           // プラグインが初期化されたかどうか
+        unityObjectName: "",          // 非同期操作時にUnityへ通知するためのゲームオブジェクト名
+        volumeSubscription: null,     // 音量APIのサブスクリプション参照
+        controllerSubscription: null, // コントローラAPIのサブスクリプション参照
+        inputPress: 0,                // コントローラの押し込み状態を保持する
+        unityMethodNames:             // 非同期的にUnityへ通知するための各種メソッド名
         {
             // Storage API
             getItems: "",   // getItems APIの通知名
@@ -297,6 +299,116 @@ var RpgAtsumaruApiForUnity =
                 var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.screenshot, jsonData);
             });
+    },
+
+
+    // RPGアツマールのコントローラ入力通知のリスンを開始します
+    // リスンを開始すると入力状態の制御が自動的に行われ GetInputState() 関数から得られる押し込み状態が更新されます
+    StartControllerListen: function()
+    {
+        // 未初期化 または 既に購読している なら
+        if (!Context.initialized || Context.controllerSubscription != null)
+        {
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return;
+        }
+
+
+        // コントローラの入力状態を初期化する
+        Context.inputBuffer = 0;
+        Context.inputPress = 0;
+
+
+        // コントローラ入力を購読する
+        Context.controllerSubscription = window.RPGAtsumaru.controllers.defaultController.subscribe({
+            next: function(input)
+            {
+                // 入力状態の受付と入力操作用ビットマスク変数の宣言（0xEnter,Esc,上,下,左,右 :LSB:を想定）
+                var inputKey = input["key"];
+                var inputStatus = input["type"];
+                var inputBitMask = 0;
+
+
+                // 上方向入力なら
+                if (inputKey == "up")
+                {
+                    // 上方向入力ビットマスクを設定
+                    inputBitMask = 0x08;
+                }
+                else if (inputKey == "down")
+                {
+                    // 下方向入力ビットマスクを設定
+                    inputBitMask = 0x04;
+                }
+                else if (inputKey == "left")
+                {
+                    // 左方向入力ビットマスクを設定
+                    inputBitMask = 0x20;
+                }
+                else if (inputKey == "right")
+                {
+                    // 右方向入力ビットマスクを設定
+                    inputBitMask = 0x01;
+                }
+                else if (inputKey == "ok")
+                {
+                    // 決定入力ビットマスクを設定
+                    inputBitMask = 0x20;
+                }
+                else if (inputKey == "cancel")
+                {
+                    // キャンセル入力ビットマスクを設定
+                    inputBitMask = 0x10;
+                }
+
+
+                // もしキーの押し込みなら
+                if (inputStatus == "keydown")
+                {
+                    // OR演算でお仕込み状態にする
+                    Context.inputPress |= inputBitMask;
+                }
+                else if (inputStatus == "keyup")
+                {
+                    // 離したのなら入力反転してANDでマスクする
+                    Context.inputPress &= ~inputBitMask;
+                }
+            },
+            error: function(err) {},
+            complete: function() {},
+        });
+    },
+
+
+    // RPGアツマールのコントローラ入力通知のリスンを停止します
+    // リスンを停止すると入力状態の制御が停止され GetInputState() 関数から得られる押し込み状態が更新されなくなります
+    StopControllerListen: function()
+    {
+        // 未初期化 または 購読していない なら
+        if (!Context.initialized || Context.controllerSubscription == null)
+        {
+            // 直ちに終了する（応答するにも応答先を知らない）
+            return;
+        }
+
+
+        // コントローラの入力状態を初期化する
+        Context.inputBuffer = 0;
+        Context.inputPress = 0;
+
+
+        // 購読を停止する
+        Context.controllerSubscription.unsubscribe();
+        Context.controllerSubscription = null;
+    },
+
+
+    // RPGアツマールのコントローラ入力状態を取得します
+    // 入力状態を取得する前に必ず StartControllerListen() 関数で入力状態をリスンしてください
+    GetInputState(): function()
+    {
+        // 入力状態をそのまま返す
+        return Context.inputPress;
     },
 };
 
