@@ -20,12 +20,105 @@ namespace RpgAtsumaruApiForUnity
     /// </summary>
     public class RpgAtsumaruController
     {
+        // メンバ変数定義
+        private uint inputPress;
+        private uint inputDown;
+        private uint inputUp;
+
+
+
         /// <summary>
         /// RpgAtsumaruController のインスタンスを初期化します
         /// </summary>
         /// <param name="receiver">RPGアツマールネイティブAPIコールバックを拾うレシーバ</param>
         internal RpgAtsumaruController(RpgAtsumaruApi.RpgAtsumaruApiCallbackReceiver receiver)
         {
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力通知のリスンを開始します。
+        /// コントローラAPIの操作をする前に必ず一度だけ呼ぶようにしてください。
+        /// また StopControllerListen() 関数によって停止した場合は、もう一度呼び出してください。
+        /// </summary>
+        public void StartControllerListen()
+        {
+            // 入力状態を初期化する
+            inputPress = 0;
+            inputDown = 0;
+            inputUp = 0;
+
+
+            // ネイティブAPI側の関数を叩く
+            RpgAtsumaruNativeApi.StartControllerListen();
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力通知のリスンを停止します。
+        /// 入力制御を完全に停止する場合に使いますが、通常はリスンしたままにする事が推奨されます。
+        /// </summary>
+        public void StopControllerListen()
+        {
+            // 入力状態を初期化する
+            inputPress = 0;
+            inputDown = 0;
+            inputUp = 0;
+
+
+            // ネイティブAPI側の関数を叩く
+            RpgAtsumaruNativeApi.StopControllerListen();
+        }
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力状態を元にUnity側の入力状態を更新します。
+        /// 通常は、毎フレーム1度だけ呼び出してください。呼び出さない場合は、状態がロックされます。
+        /// </summary>
+        public void Update()
+        {
+            // RPGアツマールの入力状態を取得して、Press、Down、Upの情報を更新する
+            var currentState = RpgAtsumaruNativeApi.GetInputState();
+            var diffState = inputPress ^ currentState;
+            inputPress = currentState;
+            inputDown = diffState & currentState;
+            inputUp = diffState & ~currentState;
+        }
+
+
+        /// <summary>
+        /// 指定されたキーが押されているかどうかを取得します
+        /// </summary>
+        /// <param name="key">確認したいキー</param>
+        /// <returns>指定されたキーが押されている場合は true を、押されていない場合は false を返します</returns>
+        public bool GetButton(RpgAtsumaruInputKey key)
+        {
+            // Pressの状態をマスクして返す
+            return (inputPress & (uint)key) != 0;
+        }
+
+
+        /// <summary>
+        /// 指定されたキーが現在のフレームで押された瞬間かどうかを取得します
+        /// </summary>
+        /// <param name="key">確認したいキー</param>
+        /// <returns>指定されたキーが押された瞬間の場合は true を、そうでない場合は false を返します</returns>
+        public bool GetButtonDown(RpgAtsumaruInputKey key)
+        {
+            // Downの状態をマスクして返す
+            return (inputDown & (uint)key) != 0;
+        }
+
+
+        /// <summary>
+        /// 指定されたキーが現在のフレームで離された瞬間かどうかを取得します
+        /// </summary>
+        /// <param name="key">確認したいキー</param>
+        /// <returns>指定されたキーが離された瞬間の場合は true を、そうでない場合は false を返します</returns>
+        public bool GetButtonUp(RpgAtsumaruInputKey key)
+        {
+            // Upの状態をマスクして返す
+            return (inputUp & (uint)key) != 0;
         }
     }
 }

@@ -123,6 +123,70 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         [DllImport("__Internal"), Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
         public static extern void Screenshot();
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力通知のリスンを開始します。
+        /// リスンを開始すると入力状態の制御が自動的に行われ GetInputState() 関数から得られる押し込み状態が更新されます。
+        /// </summary>
+        [DllImport("__Internal")]
+        public static extern void StartControllerListen();
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力通知のリスンを停止します。
+        /// リスンを停止すると入力状態の制御が停止され GetInputState() 関数から得られる押し込み状態が更新されなくなります。
+        /// </summary>
+        [DllImport("__Internal")]
+        public static extern void StopControllerListen();
+
+
+        /// <summary>
+        /// RPGアツマールのコントローラ入力状態を取得します。
+        /// 入力状態を取得する前に必ず StartControllerListen() 関数で入力状態をリスンしてください。
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("__Internal")]
+        public static extern uint GetInputState();
+    }
+
+
+
+    /// <summary>
+    /// RPGアツマールのコントローラ入力で入力されるキーを表現した列挙型です。
+    /// </summary>
+    [Flags]
+    public enum RpgAtsumaruInputKey : uint
+    {
+        /// <summary>
+        /// Enter ボタン
+        /// </summary>
+        Enter = 0x20,
+
+        /// <summary>
+        /// Esc ボタン
+        /// </summary>
+        Esc = 0x10,
+
+        /// <summary>
+        /// 十字キーの上方向ボタン
+        /// </summary>
+        Up = 0x08,
+
+        /// <summary>
+        /// 十字キーの下方向ボタン
+        /// </summary>
+        Down = 0x04,
+
+        /// <summary>
+        /// 十字キーの左方向ボタン
+        /// </summary>
+        Left = 0x02,
+
+        /// <summary>
+        /// 十字キーの右方向ボタン
+        /// </summary>
+        Right = 0x01,
     }
 
 
