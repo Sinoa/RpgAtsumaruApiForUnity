@@ -220,7 +220,7 @@ namespace RpgAtsumaruApiForUnity
     /// ネイティブプラグインを初期化する為のパラメータを定義した構造体です
     /// </summary>
     [Serializable]
-    internal struct RptAtsumaruNativeApiInitializeParameter
+    internal struct RpgAtsumaruNativeApiInitializeParameter
     {
         /// <summary>
         /// ネイティブプラグインからUnityへ通知される際、その通知を受けるゲームオブジェクトの名前
@@ -439,7 +439,7 @@ namespace RpgAtsumaruApiForUnity
 
 
     /// <summary>
-    /// RPGアツマールのスコアボードで事故ベストレコードデータを持つ構造体です
+    /// RPGアツマールのスコアボードで自己ベストレコードデータを持つ構造体です
     /// </summary>
     [Serializable]
     public struct RpgAtsumaruMyBestRecord

@@ -168,7 +168,7 @@ namespace RpgAtsumaruApiForUnity
 
 
             // ネイティブAPIの初期化パラメータを生成して初期化する
-            var nativeApiInitializeParam = new RptAtsumaruNativeApiInitializeParameter()
+            var nativeApiInitializeParam = new RpgAtsumaruNativeApiInitializeParameter()
             {
                 // オブジェクト名や、コールバック名を設定していく
                 UnityObjectName = CallbackReceiverGameObjectName,
