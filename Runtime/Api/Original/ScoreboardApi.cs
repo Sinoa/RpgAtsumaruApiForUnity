@@ -89,7 +89,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="boardId">表示したいスコアボードID</param>
         /// <returns>スコアボードを表示する操作タスクを返します</returns>
-        public async Task<(bool isError, string message)> ShowScoreboardAsync(int boardId)
+        public virtual async Task<(bool isError, string message)> ShowScoreboardAsync(int boardId)
         {
             // もし、シグナル状態なら
             if (scoreboardShowAwaitable.IsCompleted)
@@ -116,7 +116,7 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="boardId">送信する先のスコアボードID</param>
         /// <param name="score">送信するスコア</param>
         /// <returns>スコアを送信する操作タスクを返します</returns>
-        public async Task<(bool isError, string message)> SendScoreAsync(int boardId, long score)
+        public virtual async Task<(bool isError, string message)> SendScoreAsync(int boardId, long score)
         {
             // もし、シグナル状態なら
             if (scoreboardSendAwaitable.IsCompleted)
@@ -142,7 +142,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="boardId">取得したいスコアボードID</param>
         /// <returns>スコアボードの取得をする操作タスクを返します</returns>
-        public async Task<(bool isError, string message, RpgAtsumaruScoreboardData scoreboard)> GetScoreboardAsync(int boardId)
+        public virtual async Task<(bool isError, string message, RpgAtsumaruScoreboardData scoreboard)> GetScoreboardAsync(int boardId)
         {
             // もし、シグナル状態なら
             if (scoreboardReceivedAwaitable.IsCompleted)
