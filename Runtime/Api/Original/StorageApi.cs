@@ -116,7 +116,7 @@ namespace RpgAtsumaruApiForUnity
         /// また、実際のセーブデータの削除の同期もこのタイミングで行われます。
         /// </summary>
         /// <returns>セーブデータの同期操作を行っているタスクを返します</returns>
-        public async Task SyncSaveDataAsync()
+        public virtual async Task SyncSaveDataAsync()
         {
             // もし同期待機オブジェクトが完了状態なら
             if (syncItemsAwaitable.IsCompleted)
@@ -211,7 +211,7 @@ namespace RpgAtsumaruApiForUnity
         /// また null を設定するとセーブデータの削除として扱われます。
         /// </summary>
         /// <param name="systemData">設定するシステムデータ。nullを指定すると削除対象とみなされます。</param>
-        public void SetSystemData(string systemData)
+        public virtual void SetSystemData(string systemData)
         {
             // もしセーブデータテーブルに既存のデータが存在するなら
             if (saveDataTable.TryGetValue(SystemSaveDataKeyName, out var saveData))
@@ -232,7 +232,7 @@ namespace RpgAtsumaruApiForUnity
         /// システムデータを取得します
         /// </summary>
         /// <returns>システムデータを取得した場合はその内容を、システムデータが存在しない場合は null を返します</returns>
-        public string GetSystemData()
+        public virtual string GetSystemData()
         {
             // もしセーブデータテーブルに既存のデータが存在するなら
             if (saveDataTable.TryGetValue(SystemSaveDataKeyName, out var saveData))
@@ -251,7 +251,7 @@ namespace RpgAtsumaruApiForUnity
         /// システムセーブデータが含まれているかどうかを取得します
         /// </summary>
         /// <returns>システムセーブデータが含まれている場合は true を、含まれていない場合は false を返します</returns>
-        public bool ContainsSystemData()
+        public virtual bool ContainsSystemData()
         {
             // システムセーブデータの取得結果がnull以外が存在するとする
             return GetSystemData() != null;
@@ -266,7 +266,7 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="slotId">0から始まるスロットID</param>
         /// <param name="saveData">セーブするセーブデータ。nullを指定すると削除対象とみなされます。</param>
         /// <exception cref="ArgumentOutOfRangeException">スロットIDに0未満の値が指定されました</exception>
-        public void SetSaveData(int slotId, string saveData)
+        public virtual void SetSaveData(int slotId, string saveData)
         {
             // 例外判定を入れる
             ThrowIfOutOfRangeSlotId(slotId);
@@ -294,7 +294,7 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="slotId">取得したいセーブデータのスロットID</param>
         /// <returns>セーブデータを取得した場合はその内容を、セーブデータが存在しない場合は null を返します</returns>
         /// <exception cref="ArgumentOutOfRangeException">スロットIDに0未満の値が指定されました</exception>
-        public string GetSaveData(int slotId)
+        public virtual string GetSaveData(int slotId)
         {
             // 例外判定を入れる
             ThrowIfOutOfRangeSlotId(slotId);
@@ -320,7 +320,7 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="slotId">確認したいスロットID</param>
         /// <returns>対象スロットIDのセーブデータが含まれている場合は true を、含まれていない場合は false を返します</returns>
         /// <exception cref="ArgumentOutOfRangeException">スロットIDに0未満の値が指定されました</exception>
-        public bool ContainsSaveData(int slotId)
+        public virtual bool ContainsSaveData(int slotId)
         {
             // 値を取得してnull以外がデータが含まれていると判定する
             return GetSaveData(slotId) != null;
@@ -331,7 +331,7 @@ namespace RpgAtsumaruApiForUnity
         /// システムデータ以外の、全ての有効なセーブデータのスロットIDを配列で取得します
         /// </summary>
         /// <returns>有効なセーブデータを保有するスロットIDを配列で返します。もし1件も無い場合でも長さ0の配列を返します。</returns>
-        public int[] GetAllSaveDataSlotId()
+        public virtual int[] GetAllSaveDataSlotId()
         {
             // テーブルがそもそも空 または 1件だがシステムデータ なら
             if (saveDataTable.Count == 0 || (saveDataTable.Count == 1 && ContainsSystemData()))
@@ -372,7 +372,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="slotId">確認するスロットID</param>
         /// <exception cref="ArgumentOutOfRangeException">スロットIDに0未満の値が指定されました</exception>
-        private void ThrowIfOutOfRangeSlotId(int slotId)
+        protected void ThrowIfOutOfRangeSlotId(int slotId)
         {
             // スロットIDに負の値が指定されていたのなら
             if (slotId < 0)
