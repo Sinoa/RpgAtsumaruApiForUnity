@@ -41,7 +41,7 @@ namespace RpgAtsumaruApiForUnity
         /// コントローラAPIの操作をする前に必ず一度だけ呼ぶようにしてください。
         /// また StopControllerListen() 関数によって停止した場合は、もう一度呼び出してください。
         /// </summary>
-        public void StartControllerListen()
+        public virtual void StartControllerListen()
         {
             // 入力状態を初期化する
             inputPress = 0;
@@ -58,7 +58,7 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールのコントローラ入力通知のリスンを停止します。
         /// 入力制御を完全に停止する場合に使いますが、通常はリスンしたままにする事が推奨されます。
         /// </summary>
-        public void StopControllerListen()
+        public virtual void StopControllerListen()
         {
             // 入力状態を初期化する
             inputPress = 0;
@@ -75,7 +75,7 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールのコントローラ入力状態を元にUnity側の入力状態を更新します。
         /// 通常は、毎フレーム1度だけ呼び出してください。呼び出さない場合は、状態がロックされます。
         /// </summary>
-        public void Update()
+        public virtual void Update()
         {
             // RPGアツマールの入力状態を取得して、Press、Down、Upの情報を更新する
             var currentState = RpgAtsumaruNativeApi.GetInputState();
@@ -91,7 +91,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="key">確認したいキー</param>
         /// <returns>指定されたキーが押されている場合は true を、押されていない場合は false を返します</returns>
-        public bool GetButton(RpgAtsumaruInputKey key)
+        public virtual bool GetButton(RpgAtsumaruInputKey key)
         {
             // Pressの状態をマスクして返す
             return (inputPress & (uint)key) != 0;
@@ -103,7 +103,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="key">確認したいキー</param>
         /// <returns>指定されたキーが押された瞬間の場合は true を、そうでない場合は false を返します</returns>
-        public bool GetButtonDown(RpgAtsumaruInputKey key)
+        public virtual bool GetButtonDown(RpgAtsumaruInputKey key)
         {
             // Downの状態をマスクして返す
             return (inputDown & (uint)key) != 0;
@@ -115,7 +115,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="key">確認したいキー</param>
         /// <returns>指定されたキーが離された瞬間の場合は true を、そうでない場合は false を返します</returns>
-        public bool GetButtonUp(RpgAtsumaruInputKey key)
+        public virtual bool GetButtonUp(RpgAtsumaruInputKey key)
         {
             // Upの状態をマスクして返す
             return (inputUp & (uint)key) != 0;
