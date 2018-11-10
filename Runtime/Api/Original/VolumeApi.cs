@@ -38,7 +38,7 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// RPGアツマールの音量調整に対して自動的にUnity側のマスター音量を調整するかどうか
         /// </summary>
-        public bool EnableAutoVolumeSync
+        public virtual bool EnableAutoVolumeSync
         {
             get
             {
@@ -97,7 +97,7 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールの現在のマスター音量を取得します
         /// </summary>
         /// <returns>マスター音量を（OFF 0.0 ～ 1.0 ON）の値で返します</returns>
-        public float GetCurrentVolume()
+        public virtual float GetCurrentVolume()
         {
             // プラグインから音量の取得をする
             return RpgAtsumaruNativeApi.GetCurrentVolume();
@@ -108,7 +108,7 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールの音量調整バーの監視を開始します。
         /// 監視を開始すると自動的に音量調整バーが表示されます。
         /// </summary>
-        public void StartVolumeChangeListen()
+        public virtual void StartVolumeChangeListen()
         {
             // プラグインの音量監視開始APIを叩く
             RpgAtsumaruNativeApi.StartVolumeListen();
@@ -119,7 +119,7 @@ namespace RpgAtsumaruApiForUnity
         /// RPGアツマールの音量調整バーの監視を停止します。
         /// 監視を停止しても一度表示された音量調整バーは非表示にはなりません。
         /// </summary>
-        public void StopVolumeChangeListen()
+        public virtual void StopVolumeChangeListen()
         {
             // プラグインの音量監視停止APIを叩く
             RpgAtsumaruNativeApi.StopVolumeListen();
