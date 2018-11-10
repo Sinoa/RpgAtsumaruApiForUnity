@@ -532,6 +532,54 @@ var RpgAtsumaruApiForUnity =
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.setScore, jsonData);
             });
     },
+
+
+    // RPGアツマールコメント機能の内部状態をリセットしてからシーンを切り替えます（タイトルシーンに戻る時やゲームの状態がリセットされる時など）
+    // sceneName : 最大64文字のASCII文字列で表されるシーン名。また、文字列の先頭にアンダースコアが2つをつけることは予約語と衝突するため使用できません。
+    ResetAndChangeScene: function(sceneName)
+    {
+        // C#の文字列ポインタからJS用文字列を取り出してアツマールAPIを叩く
+        var jsSceneName = Pointer_stringify(sceneName);
+        window.RPGAtsumaru.comment.resetAndChangeScene(jsSceneName);
+    },
+
+
+    // RPGアツマールコメントのシーンを切り替えます
+    // sceneName : 最大64文字のASCII文字列で表されるシーン名。また、文字列の先頭にアンダースコアが2つをつけることは予約語と衝突するため使用できません。
+    ChangeScene: function(sceneName)
+    {
+        // C#の文字列ポインタからJS用文字列を取り出してアツマールAPIを叩く
+        var jsSceneName = Pointer_stringify(sceneName);
+        window.RPGAtsumaru.comment.changeScene(jsSceneName);
+    },
+
+
+    // RPGアツマールコメントのシーン内で特定のコンテキストを設定します
+    // context : 最大64文字のASCII文字列で表される、設定するコンテキストの文字列。
+    SetContext: function(context)
+    {
+        // C#の文字列ポインタからJS用文字列を取り出してアツマールAPIを叩く
+        var jsContext = Pointer_stringify(context);
+        window.RPGAtsumaru.comment.setContext(jsContext);
+    },
+
+
+    // RPGアツマールコメントの現在のコンテキストに対して状態を進めます
+    // factor : 現在のコンテキストに対して状態の内容を示す文字列
+    PushContextFactor: function(factor)
+    {
+        // C#の文字列ポインタからJS用文字列を取り出してアツマールAPIを叩く
+        var jsFactor = Pointer_stringify(factor);
+        window.RPGAtsumaru.comment.pushContextFactor(jsFactor);
+    },
+
+
+    // RPGアツマールコメントの現在のコンテキストが特定コンテキストファクタの状態におけるマイナーコンテキストを進めます
+    PushMinorContext: function()
+    {
+        // そのままアツマールAPIを叩く
+        window.RPGAtsumaru.comment.pushMinorContext();
+    },
 };
 
 
