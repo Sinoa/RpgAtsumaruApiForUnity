@@ -173,6 +173,45 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="boardId">スコア情報を取得したいスコアボードID（RPGアツマールの仕様上、既定は 1 ～ 10 までです（10個以上の場合は管理ページから上限を指定できます））</param>
         [DllImport("__Internal")]
         public static extern void GetScoreRecord(int boardId);
+
+
+        /// <summary>
+        /// RPGアツマールコメント機能の内部状態をリセットしてからシーンを切り替えます。
+        /// </summary>
+        /// <param name="sceneName">最大64文字のASCII文字列で表されるシーン名。また、文字列の先頭にアンダースコアが2つをつけることは予約語と衝突するため使用できません。</param>
+        [DllImport("__Internal")]
+        public static extern void ResetAndChangeScene(string sceneName);
+
+
+        /// <summary>
+        /// RPGアツマールコメントのシーンを切り替えます
+        /// </summary>
+        /// <param name="sceneName">最大64文字のASCII文字列で表されるシーン名。また、文字列の先頭にアンダースコアが2つをつけることは予約語と衝突するため使用できません。</param>
+        [DllImport("__Internal")]
+        public static extern void ChangeScene(string sceneName);
+
+
+        /// <summary>
+        /// RPGアツマールコメントのシーン内で特定のコンテキストを設定します
+        /// </summary>
+        /// <param name="context">最大64文字のASCII文字列で表される、設定するコンテキストの文字列。</param>
+        [DllImport("__Internal")]
+        public static extern void SetContext(string context);
+
+
+        /// <summary>
+        /// RPGアツマールコメントの現在のコンテキストに対して状態を進めます
+        /// </summary>
+        /// <param name="factor">現在のコンテキストに対して状態の内容を示す文字列</param>
+        [DllImport("__Internal")]
+        public static extern void PushContextFactor(string factor);
+
+
+        /// <summary>
+        /// RPGアツマールコメントの現在のコンテキストが特定コンテキストファクタの状態におけるマイナーコンテキストを進めます
+        /// </summary>
+        [DllImport("__Internal")]
+        public static extern void PushMinorContext();
     }
 
 
