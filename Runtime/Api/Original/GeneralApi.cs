@@ -89,7 +89,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="name">取得したいクエリ名</param>
         /// <returns>指示されたクエリ名の変数に設定された値を返します</returns>
-        public string GetQuery(string name)
+        public virtual string GetQuery(string name)
         {
             // ネイティブプラグイン関数の結果をそのまま伝える
             return RpgAtsumaruNativeApi.GetQuery(name);
@@ -101,7 +101,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="url">URLを開くポップアップに表示するURL</param>
         /// <returns>URLを開くポップアップを開く操作をしているタスクを返します</returns>
-        public async Task<(bool isError, string message)> OpenLinkAsync(string url)
+        public virtual async Task<(bool isError, string message)> OpenLinkAsync(string url)
         {
             // もし、シグナル状態なら
             if (openLinkAwaitable.IsCompleted)
@@ -127,7 +127,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="niconicoUserId">表示するニコニコユーザーID</param>
         /// <returns>作者情報ダイアログを開く操作をしているタスクを返します</returns>
-        public async Task<(bool isError, string message)> ShowCreatorInformationAsync(int niconicoUserId)
+        public virtual async Task<(bool isError, string message)> ShowCreatorInformationAsync(int niconicoUserId)
         {
             // もし、シグナル状態なら
             if (creatorInfoShowAwaitable.IsCompleted)
@@ -153,7 +153,7 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <returns>スクリーンショットとTwitter投稿ダイアログを操作しているタスクを返します</returns>
         [System.Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
-        public async Task<(bool isError, string message)> ScreenshotAsync()
+        public virtual async Task<(bool isError, string message)> ScreenshotAsync()
         {
             // もし、シグナル状態なら
             if (screenshotAwaitable.IsCompleted)
