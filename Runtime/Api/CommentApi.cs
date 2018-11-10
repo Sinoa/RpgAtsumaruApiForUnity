@@ -13,6 +13,7 @@
 // 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
+using System;
 using UnityEngine.SceneManagement;
 
 namespace RpgAtsumaruApiForUnity
@@ -22,6 +23,12 @@ namespace RpgAtsumaruApiForUnity
     /// </summary>
     public class RpgAtsumaruComment
     {
+        // 定数定義
+        private const int MaxAllowSceneNameLength = 64;
+        private const int MaxAllowContextNameLength = 64;
+
+
+
         /// <summary>
         /// RpgAtsumaruComment のインスタンスを初期化します
         /// </summary>
@@ -35,6 +42,10 @@ namespace RpgAtsumaruApiForUnity
         /// 現在のUnityのアクティブなシーン名を用いて、コメントシーンを切り替えます。
         /// また、コメントシーンの状態をリセットします。
         /// </summary>
+        /// <exception cref="ArgumentException">シーン名が null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}</exception>
+        /// <exception cref="ArgumentException">シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}</exception>
+        /// <exception cref="ArgumentException">シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}</exception>
         public void ChangeScene()
         {
             // 現在のシーン名を渡して状態をリセットする
@@ -46,6 +57,10 @@ namespace RpgAtsumaruApiForUnity
         /// 現在のUnityのアクティブなシーン名を用いて、コメントシーンを切り替えます。
         /// </summary>
         /// <param name="reset">コメントシーンの状態をリセットする場合は true</param>
+        /// <exception cref="ArgumentException">シーン名が null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}</exception>
+        /// <exception cref="ArgumentException">シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}</exception>
+        /// <exception cref="ArgumentException">シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}</exception>
         public void ChangeScene(bool reset)
         {
             // 現在のシーン名を渡して切り替える
@@ -58,8 +73,48 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         /// <param name="sceneName">切り替えるコメントシーン名。ただし、最大64文字のASCII文字列でなければなりません。さらに文字列の先頭にはアンダースコア2つをつけることは許されていません。</param>
         /// <param name="reset">コメントシーンの状態をリセットする場合は true</param>
+        /// <exception cref="ArgumentException">シーン名が null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}</exception>
+        /// <exception cref="ArgumentException">シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}</exception>
+        /// <exception cref="ArgumentException">シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}</exception>
         public void ChangeScene(string sceneName, bool reset)
         {
+            // もし空文字列かnullを渡されたら
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                // 一体どのようなシーンへ切り替えるつもりだったのか
+                throw new ArgumentException("シーン名が null または 空文字列 です", nameof(sceneName));
+            }
+
+
+            // 既定文字数を超過しているのなら
+            if (sceneName.Length > MaxAllowSceneNameLength)
+            {
+                // 文字数超過例外を吐く
+                throw new ArgumentException($"シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}", nameof(sceneName));
+            }
+
+
+            // シーン名が2文字以上でかつアンダースコアが2つ先頭についていた場合は
+            if (sceneName.Length >= 2 && sceneName.StartsWith("__"))
+            {
+                // アンダースコアが文字列の先頭に2つついていることは許されない
+                throw new ArgumentException($"シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}", nameof(sceneName));
+            }
+
+
+            // 文字列内の文字を全て回る
+            foreach (var chara in sceneName)
+            {
+                // もしASCIIコードの印字可能な文字の範囲外なら
+                if (chara < ' ' || chara > '~')
+                {
+                    // シーン名に使えない文字を利用しようとした例外を吐く
+                    throw new ArgumentException($"シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}", nameof(sceneName));
+                }
+            }
+
+
             // リセットする場合は
             if (reset)
             {
@@ -78,8 +133,39 @@ namespace RpgAtsumaruApiForUnity
         /// コメントのシーン内で特定のコンテキストを設定します
         /// </summary>
         /// <param name="context">設定するコンテキストの文字列。ただし、最大64文字のASCII文字列でなければなりません。</param>
+        /// <exception cref="ArgumentException">コンテキストが null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">コンテキストは{MaxAllowContextNameLength}文字を超えることは出来ません Name={context} Length={context.Length}</exception>
+        /// <exception cref="ArgumentException">コンテキストに使えない文字が含まれています Name={context} Invalid={chara}</exception>
         public void SetContext(string context)
         {
+            // もし空文字列かnullを渡されたら
+            if (string.IsNullOrWhiteSpace(context))
+            {
+                // 一体どのようなコンテキストを設定するつもりだったのか
+                throw new ArgumentException("コンテキストが null または 空文字列 です", nameof(context));
+            }
+
+
+            // 既定文字数を超過しているのなら
+            if (context.Length > MaxAllowContextNameLength)
+            {
+                // 文字数超過例外を吐く
+                throw new ArgumentException($"コンテキストは{MaxAllowContextNameLength}文字を超えることは出来ません Name={context} Length={context.Length}", nameof(context));
+            }
+
+
+            // 文字列内の文字を全て回る
+            foreach (var chara in context)
+            {
+                // もしASCIIコードの印字可能な文字の範囲外なら
+                if (chara < ' ' || chara > '~')
+                {
+                    // コンテキスト使えない文字を利用しようとした例外を吐く
+                    throw new ArgumentException($"コンテキストに使えない文字が含まれています Name={context} Invalid={chara}", nameof(context));
+                }
+            }
+
+
             // ネイティブプラグイン関数を叩く
             RpgAtsumaruNativeApi.SetContext(context);
         }
@@ -89,8 +175,17 @@ namespace RpgAtsumaruApiForUnity
         /// 現在のコンテキストに対して状態を進めます
         /// </summary>
         /// <param name="factor">現在のコンテキストに対して状態の内容を示す文字列</param>
+        /// <exception cref="ArgumentException">コンテキストファクタが null または 空文字列 です</exception>
         public void PushContextFactor(string factor)
         {
+            // もし空文字列かnullを渡されたら
+            if (string.IsNullOrWhiteSpace(factor))
+            {
+                // 一体どのようなコンテキストファクタをプッシュするつもりだったのか
+                throw new ArgumentException("コンテキストファクタが null または 空文字列 です", nameof(factor));
+            }
+
+
             // ネイティブプラグイン関数を叩く
             RpgAtsumaruNativeApi.PushContextFactor(factor);
         }
