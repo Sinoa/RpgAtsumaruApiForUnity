@@ -77,7 +77,73 @@ namespace RpgAtsumaruApiForUnity
         /// <exception cref="ArgumentException">シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}</exception>
         /// <exception cref="ArgumentException">シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}</exception>
         /// <exception cref="ArgumentException">シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}</exception>
-        public void ChangeScene(string sceneName, bool reset)
+        public virtual void ChangeScene(string sceneName, bool reset)
+        {
+            // 例外判定を入れる
+            ThrowIfInvalidSceneName(sceneName);
+
+
+            // リセットする場合は
+            if (reset)
+            {
+                // リセットしながらシーンを切り替えるネイティブプラグイン関数を叩く
+                RpgAtsumaruNativeApi.ResetAndChangeScene(sceneName);
+            }
+            else
+            {
+                // そのままシーンを切り替えるネイティブプラグイン関数を叩く
+                RpgAtsumaruNativeApi.ChangeScene(sceneName);
+            }
+        }
+
+
+        /// <summary>
+        /// コメントのシーン内で特定のコンテキストを設定します
+        /// </summary>
+        /// <param name="context">設定するコンテキストの文字列。ただし、最大64文字のASCII文字列でなければなりません。</param>
+        /// <exception cref="ArgumentException">コンテキストが null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">コンテキストは{MaxAllowContextNameLength}文字を超えることは出来ません Name={context} Length={context.Length}</exception>
+        /// <exception cref="ArgumentException">コンテキストに使えない文字が含まれています Name={context} Invalid={chara}</exception>
+        public virtual void SetContext(string context)
+        {
+            // 例外判定を入れてからネイティブプラグイン関数を叩く
+            ThrowIfInvalidContextName(context);
+            RpgAtsumaruNativeApi.SetContext(context);
+        }
+
+
+        /// <summary>
+        /// 現在のコンテキストに対して状態を進めます
+        /// </summary>
+        /// <param name="factor">現在のコンテキストに対して状態の内容を示す文字列</param>
+        /// <exception cref="ArgumentException">コンテキストファクタが null または 空文字列 です</exception>
+        public virtual void PushContextFactor(string factor)
+        {
+            // 例外判定を入れてからネイティブプラグイン関数を叩く
+            ThrowIfInvalidFactor(factor);
+            RpgAtsumaruNativeApi.PushContextFactor(factor);
+        }
+
+
+        /// <summary>
+        /// 現在のコンテキストが特定コンテキストファクタの状態におけるマイナーコンテキストを進めます
+        /// </summary>
+        public virtual void PushMinorContext()
+        {
+            // ネイティブプラグイン関数を叩く
+            RpgAtsumaruNativeApi.PushMinorContext();
+        }
+
+
+        /// <summary>
+        /// シーン名がAPIとして使えない場合に例外をスローします
+        /// </summary>
+        /// <param name="sceneName">確認するシーン名</param>
+        /// <exception cref="ArgumentException">シーン名が null または 空文字列 です</exception>
+        /// <exception cref="ArgumentException">シーン名は{MaxAllowSceneNameLength}文字を超えることは出来ません Name={sceneName} Length={sceneName.Length}</exception>
+        /// <exception cref="ArgumentException">シーン名にアンダースコア2つから始めることは出来ません Name={sceneName}</exception>
+        /// <exception cref="ArgumentException">シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}</exception>
+        protected void ThrowIfInvalidSceneName(string sceneName)
         {
             // もし空文字列かnullを渡されたら
             if (string.IsNullOrWhiteSpace(sceneName))
@@ -113,30 +179,17 @@ namespace RpgAtsumaruApiForUnity
                     throw new ArgumentException($"シーン名に使えない文字が含まれています Name={sceneName} Invalid={chara}", nameof(sceneName));
                 }
             }
-
-
-            // リセットする場合は
-            if (reset)
-            {
-                // リセットしながらシーンを切り替えるネイティブプラグイン関数を叩く
-                RpgAtsumaruNativeApi.ResetAndChangeScene(sceneName);
-            }
-            else
-            {
-                // そのままシーンを切り替えるネイティブプラグイン関数を叩く
-                RpgAtsumaruNativeApi.ChangeScene(sceneName);
-            }
         }
 
 
         /// <summary>
-        /// コメントのシーン内で特定のコンテキストを設定します
+        /// コンテキスト名がAPIとして使えない場合に例外をスローします
         /// </summary>
-        /// <param name="context">設定するコンテキストの文字列。ただし、最大64文字のASCII文字列でなければなりません。</param>
+        /// <param name="context">確認するコンテキスト</param>
         /// <exception cref="ArgumentException">コンテキストが null または 空文字列 です</exception>
         /// <exception cref="ArgumentException">コンテキストは{MaxAllowContextNameLength}文字を超えることは出来ません Name={context} Length={context.Length}</exception>
         /// <exception cref="ArgumentException">コンテキストに使えない文字が含まれています Name={context} Invalid={chara}</exception>
-        public void SetContext(string context)
+        protected void ThrowIfInvalidContextName(string context)
         {
             // もし空文字列かnullを渡されたら
             if (string.IsNullOrWhiteSpace(context))
@@ -164,19 +217,15 @@ namespace RpgAtsumaruApiForUnity
                     throw new ArgumentException($"コンテキストに使えない文字が含まれています Name={context} Invalid={chara}", nameof(context));
                 }
             }
-
-
-            // ネイティブプラグイン関数を叩く
-            RpgAtsumaruNativeApi.SetContext(context);
         }
 
 
         /// <summary>
-        /// 現在のコンテキストに対して状態を進めます
+        /// ファクタがAPIとして使えない場合に例外をスローします
         /// </summary>
-        /// <param name="factor">現在のコンテキストに対して状態の内容を示す文字列</param>
+        /// <param name="factor">確認するファクタ</param>
         /// <exception cref="ArgumentException">コンテキストファクタが null または 空文字列 です</exception>
-        public void PushContextFactor(string factor)
+        protected void ThrowIfInvalidFactor(string factor)
         {
             // もし空文字列かnullを渡されたら
             if (string.IsNullOrWhiteSpace(factor))
@@ -184,20 +233,6 @@ namespace RpgAtsumaruApiForUnity
                 // 一体どのようなコンテキストファクタをプッシュするつもりだったのか
                 throw new ArgumentException("コンテキストファクタが null または 空文字列 です", nameof(factor));
             }
-
-
-            // ネイティブプラグイン関数を叩く
-            RpgAtsumaruNativeApi.PushContextFactor(factor);
-        }
-
-
-        /// <summary>
-        /// 現在のコンテキストが特定コンテキストファクタの状態におけるマイナーコンテキストを進めます
-        /// </summary>
-        public void PushMinorContext()
-        {
-            // ネイティブプラグイン関数を叩く
-            RpgAtsumaruNativeApi.PushMinorContext();
         }
     }
 }
