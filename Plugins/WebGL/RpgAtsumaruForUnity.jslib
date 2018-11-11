@@ -92,6 +92,16 @@ var RpgAtsumaruApiForUnity =
         Context.unityMethodNames.getScore = initParam.GetScoreCallback;
 
 
+        // ウィンドウサイズが変化した時のコールバックを登録
+        window.onresize = function()
+        {
+            // Unityの描画用キャンバスを取得して、リサイズ後の自身がいるウィンドウのサイズを適用する
+            var canvas = document.getElementById("#canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+
         // 初期化済みをマーク
         Context.initialized = true;
     },
