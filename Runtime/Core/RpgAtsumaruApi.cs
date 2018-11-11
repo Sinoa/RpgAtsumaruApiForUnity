@@ -25,7 +25,7 @@ namespace RpgAtsumaruApiForUnity
     public static class RpgAtsumaruApi
     {
         // 定数定義
-        private const string CallbackReceiverGameObjectName = "__RPGATSUMARU_CALLBACK_RECEIVER__";
+        internal const string CallbackReceiverGameObjectName = "__RPGATSUMARU_CALLBACK_RECEIVER__";
 
         // クラス変数宣言
         private static RpgAtsumaruGeneral generalApi;
@@ -34,6 +34,9 @@ namespace RpgAtsumaruApiForUnity
         private static RpgAtsumaruComment commentApi;
         private static RpgAtsumaruController controllerApi;
         private static RpgAtsumaruScoreboard scoreboardApi;
+#if UNITY_EDITOR
+        private static bool initialized;
+#endif
 
 
 
@@ -41,7 +44,12 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// RpgAtsumaruApiForUnity プラグインが初期化済みかどうか
         /// </summary>
-        public static bool Initialized => RpgAtsumaruNativeApi.IsInitialized();
+        public static bool Initialized =>
+#if !UNITY_EDITOR && UNITY_WEBGL
+            RpgAtsumaruNativeApi.IsInitialized();
+#else
+            initialized;
+#endif
 
 
         /// <summary>
@@ -185,6 +193,7 @@ namespace RpgAtsumaruApiForUnity
             };
 
 
+#if !UNITY_EDITOR && UNITY_WEBGL
             // 初期化パラメータのJSONデータ化してネイティブAPIの初期化をする
             var jsonData = JsonUtility.ToJson(nativeApiInitializeParam);
             RpgAtsumaruNativeApi.Initialize(jsonData);
@@ -197,6 +206,19 @@ namespace RpgAtsumaruApiForUnity
             commentApi = new RpgAtsumaruComment(receiver);
             controllerApi = new RpgAtsumaruController(receiver);
             scoreboardApi = new RpgAtsumaruScoreboard(receiver);
+#else
+            // 各APIを処理するダミークラスのインスタンスを生成
+            generalApi = new DummyRpgAtsumaruGeneral(receiver);
+            storageApi= new DummyRpgAtsumaruStorage(receiver);
+            volumeApi = new DummyRpgAtsumaruVolume(receiver);
+            commentApi = new DummyRpgAtsumaruComment(receiver);
+            controllerApi = new DummyRpgAtsumaruController(receiver);
+            scoreboardApi = new DummyRpgAtsumaruScoreboard(receiver);
+
+
+            // 初期化済みであることをマークする
+            initialized = true;
+#endif
         }
 
 
