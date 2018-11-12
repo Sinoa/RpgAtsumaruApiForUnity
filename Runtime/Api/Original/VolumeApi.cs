@@ -24,7 +24,7 @@ namespace RpgAtsumaruApiForUnity
     public class RpgAtsumaruVolume
     {
         // メンバ変数定義
-        private bool enableAutoVolumeSync;
+        protected bool enableAutoVolumeSync;
 
 
 
