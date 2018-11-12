@@ -218,6 +218,7 @@ namespace RpgAtsumaruApiForUnity
 
             // 初期化済みであることをマークする
             initialized = true;
+            InternalLogger.Log(LogLevel.Log, "RpgAtsumaruAPI Initialized");
 #endif
         }
 
