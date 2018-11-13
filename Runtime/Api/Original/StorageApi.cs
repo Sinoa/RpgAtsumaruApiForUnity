@@ -349,8 +349,8 @@ namespace RpgAtsumaruApiForUnity
             int insertIndex = 0;
             foreach (var saveData in saveDataTable.Values)
             {
-                // もしシステムデータなら
-                if (saveData.Key == SystemSaveDataKeyName)
+                // もしシステムデータ または データがnull なら
+                if (saveData.Key == SystemSaveDataKeyName || saveData.SaveData == null)
                 {
                     // そのまま次へ
                     continue;
