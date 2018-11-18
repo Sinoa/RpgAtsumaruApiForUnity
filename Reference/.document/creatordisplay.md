@@ -3,19 +3,40 @@
 
 # 解説
 
-
+プレイヤーに自身が制作した他のゲームなどを教えたり、自己紹介を兼ねたダイアログを表示する機能が  
+RPGアツマールに存在しており、この機能を呼び出すこtが出来ます。  
+サンプルコードは以下の通りです。
 
 # サンプルコード
 
 ~~~{.cs}
+using RpgAtsumaruApiForUnity;
+using UnityEngine;
+
+public class RpgAtsumaruSample : MonoBehaviour
+{
+    private void Awake()
+    {
+        // もしプラグインの初期化が終わっていないなら
+        if (!RpgAtsumaruApi.Initialized)
+        {
+            // プラグインの初期化
+            RpgAtsumaruApi.Initialize();
+        }
+    }
+
+
+    private async void Start()
+    {
+        // ニコニコユーザーID 12345 番のクリエイター情報を表示（待機しているのはRPGアツマールからの結果受け取りであって表示結果ではありません）
+        await RpgAtsumaruApi.GeneralApi.ShowCreatorInformationAsync(12345);
+    }
+}
 ~~~
 
 # 参照ドキュメント
 
 | Link | Help |
 | :--- | :--- |
-| RpgAtsumaruApiForUnity.RpgAtsumaruApi.ControllerApi | コントローラAPIを取得するプロパティ |
-| RpgAtsumaruApiForUnity.RpgAtsumaruController.Update() | RPGアツマール入力ステータスをラッチして状態を更新する関数 |
-| RpgAtsumaruApiForUnity.RpgAtsumaruController.GetButton() | キー入力されているかどうかを取得する関数 |
-| RpgAtsumaruApiForUnity.RpgAtsumaruController.GetButtonDown() | キー入力された瞬間のフレームかどうかを取得する関数 |
-| RpgAtsumaruApiForUnity.RpgAtsumaruInputKey | RPGアツマールで定義されているキーを定義しています |
+| RpgAtsumaruApiForUnity.RpgAtsumaruApi.GeneralApi | 汎用APIを取得するプロパティ |
+| RpgAtsumaruApiForUnity.RpgAtsumaruGeneral.ShowCreatorInformationAsync() | クリエイター情報表示ダイアログを表示する関数 |
