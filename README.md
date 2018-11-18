@@ -8,11 +8,13 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 
 ## 始め方(Getting Started)
 
-未記入
+[APIリファレンスサイト](https://rpgatsumaruapiforunity.sinoa.ws/ApiReference/)の  
+環境の準備 -> ダウンロード のページをご参照下さい。
 
 ### 導入方法(Installing)
 
-未記入
+[APIリファレンスサイト](https://rpgatsumaruapiforunity.sinoa.ws/ApiReference/)の  
+環境の準備 -> Unityへインポート のページをご参照下さい。
 
 ## RpgAtsumaruApiForUnity について(About RpgAtsumaruApiForUnity)
 
@@ -34,7 +36,8 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 
 ## 履歴(Version)
 
-未記入
+* v1.0.0
+** 初版リリース
 
 ## 開発貢献者(Development Contributor)
 
