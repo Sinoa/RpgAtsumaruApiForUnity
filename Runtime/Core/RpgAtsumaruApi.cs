@@ -188,6 +188,7 @@ namespace RpgAtsumaruApiForUnity
                 OpenLinkCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnOpenLinkCompleted),
                 CreatorInfoShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnCreatorInfoShown),
                 ScreenshotCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScreenshotCompleted),
+                TakeScreenshotCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnRequestScreenShot),
                 ScoreboardShownCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreboardShown),
                 SetScoreCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreSendCompleted),
                 GetScoreCallback = nameof(RpgAtsumaruApiCallbackReceiver.OnScoreboardReceived),
@@ -281,6 +282,11 @@ namespace RpgAtsumaruApiForUnity
             /// RPGアツマールのスクリーンショットとそのダイアログ表示を完了したイベントです
             /// </summary>
             public event Action<string> ScreenshotCompleted;
+
+            /// <summary>
+            /// RPGアツマールからスクリーンショットの要求を受けた時のイベントです
+            /// </summary>
+            public event Action RequestScreenShot;
 
             /// <summary>
             /// RPGアツマール上にスコアボードの表示を完了したイベントです
@@ -387,6 +393,16 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 ScreenshotCompleted?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// RPGアツマールのスクリーンショットデータ要求イベントを処理します
+            /// </summary>
+            public void OnRequestScreenShot()
+            {
+                // イベントにそのまま横流し
+                RequestScreenShot?.Invoke();
             }
 
 
