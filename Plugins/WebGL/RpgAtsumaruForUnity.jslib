@@ -25,6 +25,7 @@ var RpgAtsumaruApiForUnity =
         volumeSubscription: null,     // 音量APIのサブスクリプション参照
         controllerSubscription: null, // コントローラAPIのサブスクリプション参照
         inputPress: 0,                // コントローラの押し込み状態を保持する
+        screenShotImage: "",          // スクリーンショットイメージ（DataUrls形式）
         unityMethodNames:             // 非同期的にUnityへ通知するための各種メソッド名
         {
             // Storage API
@@ -42,7 +43,8 @@ var RpgAtsumaruApiForUnity =
             creatorInfoShown: "", // displayCreatorInformationModal APIの通知名
 
             // Screenshot API
-            screenshot: "", // screenshot.displayModal APIの通知名
+            screenshot: "",     // screenshot.displayModal APIの通知名
+            takeScreenShot: "", // playerFeatures.takeScreenShot 関数の通知名
 
             // Scoreboard API
             scoreDisplay: "", // scoreboards.display APIの通知名
@@ -87,6 +89,7 @@ var RpgAtsumaruApiForUnity =
         Context.unityMethodNames.openLink = initParam.OpenLinkCallback;
         Context.unityMethodNames.creatorInfoShown = initParam.CreatorInfoShownCallback;
         Context.unityMethodNames.screenshot = initParam.ScreenshotCallback;
+        Context.unityMethodNames.takeScreenShot = initParam.TakeScreenshotCallback;
         Context.unityMethodNames.scoreDisplay = initParam.ScoreboardShownCallback;
         Context.unityMethodNames.setScore = initParam.SetScoreCallback;
         Context.unityMethodNames.getScore = initParam.GetScoreCallback;
@@ -100,6 +103,15 @@ var RpgAtsumaruApiForUnity =
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
+
+
+        // RPGアツマールがスクリーンショットのイメージデータを取得する関数に、Unityが生成したイメージを返す関数として設定する
+        window.RPGAtsumaru.playerFeatures.takeScreenShot = function()
+        {
+            // Unityにスクリーンショットのデータを要求して、設定してもらったスクリーンショットデータを返す
+            SendMessage(Context.unityObjectName, Context.unityMethodNames.takeScreenShot);
+            return Context.screenShotImage;
+        };
 
 
         // 初期化済みをマーク
@@ -317,6 +329,15 @@ var RpgAtsumaruApiForUnity =
                 var jsonData = JSON.stringify({ErrorOccured:true,Error:error})
                 SendMessage(Context.unityObjectName, Context.unityMethodNames.screenshot, jsonData);
             });
+    },
+
+
+    // Unity側で生成したスクリーンショットのデータを設定します
+    // imageDataUrl : DataUrls形式のイメージデータ
+    SetScreenShotData: function(imageDataUrl)
+    {
+        // C#文字列ポインタからJS文字列へ変換してそのままスクリーンショットデータとして持つ
+        Context.screenShotImage = Pointer_stringify(imageDataUrl);
     },
 
 
