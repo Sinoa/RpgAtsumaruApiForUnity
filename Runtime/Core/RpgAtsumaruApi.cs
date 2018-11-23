@@ -14,6 +14,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace RpgAtsumaruApiForUnity
@@ -209,7 +210,7 @@ namespace RpgAtsumaruApiForUnity
 #else
             // 各APIを処理するダミークラスのインスタンスを生成
             generalApi = new DummyRpgAtsumaruGeneral(receiver);
-            storageApi= new DummyRpgAtsumaruStorage(receiver);
+            storageApi = new DummyRpgAtsumaruStorage(receiver);
             volumeApi = new DummyRpgAtsumaruVolume(receiver);
             commentApi = new DummyRpgAtsumaruComment(receiver);
             controllerApi = new DummyRpgAtsumaruController(receiver);
@@ -296,6 +297,22 @@ namespace RpgAtsumaruApiForUnity
             /// </summary>
             public event Action<string> ScoreboardReceived;
 
+
+            /// <summary>
+            /// Unityの描画ループの最後に呼び出すフレーム終了イベントです
+            /// </summary>
+            public event Action EndOfFrameTriggered;
+
+
+
+            /// <summary>
+            /// コンポーネントの初期化を行います
+            /// </summary>
+            private void Awake()
+            {
+                // フレーム終了ループを開始する
+                StartCoroutine(DoEndOfFrameLoop(new WaitForEndOfFrame()));
+            }
 
 
             /// <summary>
@@ -403,6 +420,22 @@ namespace RpgAtsumaruApiForUnity
             {
                 // イベントにそのまま横流し
                 ScoreboardReceived?.Invoke(result);
+            }
+
+
+            /// <summary>
+            /// Unityのフレーム終了イベントループを実行します
+            /// </summary>
+            /// <returns>Unityのフレーム終了待機オブジェクトを返します</returns>
+            private IEnumerator DoEndOfFrameLoop(WaitForEndOfFrame waitForEndOfFrame)
+            {
+                // 無限ループ
+                while (true)
+                {
+                    // フレーム終了まで待機して、戻ってきたらイベントを起こす
+                    yield return waitForEndOfFrame;
+                    EndOfFrameTriggered?.Invoke();
+                }
             }
         }
         #endregion
