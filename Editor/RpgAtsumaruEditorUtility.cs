@@ -53,7 +53,7 @@ namespace RpgAtsumaruApiForUnity.Editor
         /// <returns>変換されたDataUrls文字列を返します</returns>
         /// <exception cref="ArgumentException">filePath が null または 空白 です</exception>
         /// <exception cref="FileNotFoundException">変換する画像のファイルが見つかりませんでした</exception>
-        /// <exception cref="InvalidOperationException">不明な画像ファイルの拡張子です Extension={fileInfo.Extension}</exception>
+        /// <exception cref="NotSupportedException">不明な画像ファイルの拡張子です Extension={fileInfo.Extension}</exception>
         public static string ConvertImageToDataUrls(string filePath)
         {
             // ファイル情報を生成してファイルが見つからないなら
@@ -69,7 +69,7 @@ namespace RpgAtsumaruApiForUnity.Editor
             if (!mimeTypeTable.TryGetValue(fileInfo.Extension, out var mimeType))
             {
                 // 指定されたファイルの拡張子で知るMIMEタイプを知らない
-                throw new InvalidOperationException($"不明な画像ファイルの拡張子です Extension={fileInfo.Extension}");
+                throw new NotSupportedException($"不明な画像ファイルの拡張子です Extension={fileInfo.Extension}");
             }
 
 
