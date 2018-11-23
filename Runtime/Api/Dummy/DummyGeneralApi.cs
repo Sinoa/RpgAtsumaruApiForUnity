@@ -76,7 +76,6 @@ namespace RpgAtsumaruApiForUnity
         /// スクリーンショットを撮った後にTwitter投稿ダイアログを非同期で操作します
         /// </summary>
         /// <returns>常に成功を返す完了タスクを返します</returns>
-        [System.Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
         public override Task<(bool isError, string message)> ScreenshotAsync()
         {
             // 成功を返す
