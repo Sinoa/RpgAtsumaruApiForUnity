@@ -29,15 +29,17 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 
 ### 使用ライブラリやソフトウェア(Used other library and software)
 
-詳細表記は LICENSELIST.md に表記
+詳細表記は LICENSE.md に表記
 
 * IceMilkTea (zlib/libpng License) <https://bitbucket.org/Sinoa/icemilktea/wiki/Home>
 
 
 ## 履歴(Version)
 
-* v1.0.0
-** 初版リリース
+* v1.1.0 (2018-11-24)
+  * スクリーンショットAPIに対応
+* v1.0.0 (2018-11-18)
+  * 初版リリース
 
 ## 開発貢献者(Development Contributor)
 
