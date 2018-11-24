@@ -29,7 +29,7 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 
 ### 使用ライブラリやソフトウェア(Used other library and software)
 
-詳細表記は LICENSELIST.md に表記
+詳細表記は LICENSE.md に表記
 
 * IceMilkTea (zlib/libpng License) <https://bitbucket.org/Sinoa/icemilktea/wiki/Home>
 
