@@ -16,6 +16,26 @@ Unity側のレンダリングバッファコピーが間に合わず、直ちに
 
 以下が、その手順及びサンプルコードになります。
 
+# デフォルトスクリーンショット画像をDataUrl形式に変換する
+
+## 概要
+
+RPGアツマールでは、スクリーンショットの画像を[DataUrl]という形式を入力として受け付けています。  
+そのため、プログラムからデフォルトスクリーンショット画像を設定する場合は、その形式に準拠します。  
+以下に、そのデータを用意するまでの手順を解説します。
+
+## Unityエディタのメニューバーからツールを起動
+
+[DataUrl]形式の変換はオンラインツールでも存在しますが、"RPGアツマールAPI for Unity"では、変換ツールを内部で実装しました。  
+Ver 1.1からUnityエディタのメニューバーに、新たに"RPGアツマール"が増えていますので、そこからアクセスします。  
+![RPGアツマール->ウィンドウ->画像をDataUrls形式に変換をクリック](@ref image007.jpg)  
+![変換する画像ファイルを選択するをクリック](@ref image008.jpg)  
+![選択した画像を変換するをクリック](@ref image009.jpg)  
+![プレビューして問題ないなら、クリップボードにコピーするをクリック](@ref image010.jpg)
+
+この手順にて変換されたデータを、クリップボードにコピーして以下のサンプルコードの通りにデータを貼り付けます。  
+また、63KiBより大きいデータでは稀に表示できないブラウザが存在するため、極力63KiB以内に抑えて下さい。
+
 # サンプルコード
 
 ~~~{.cs}
@@ -47,3 +67,6 @@ public class RpgAtsumaruSample : MonoBehaviour
 | :--- | :--- |
 | RpgAtsumaruApiForUnity.RpgAtsumaruApi.GeneralApi | 汎用APIを取得するプロパティ |
 | RpgAtsumaruApiForUnity.RpgAtsumaruGeneral.SetDefaultScreenShotImgeData() | デフォルトスクリーンショット画像を設定する関数 |
+
+
+[DataUrl]: https://ja.wikipedia.org/wiki/Data_URI_scheme "DataUrl"
