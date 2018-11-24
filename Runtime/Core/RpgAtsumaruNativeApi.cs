@@ -121,8 +121,16 @@ namespace RpgAtsumaruApiForUnity
         /// <summary>
         /// スクリーンショットを撮ってTwitterに投稿するダイアログを表示します
         /// </summary>
-        [DllImport("__Internal"), Obsolete("この関数は、現在RPGツクールMV専用の機能となっています")]
+        [DllImport("__Internal")]
         public static extern void Screenshot();
+
+
+        /// <summary>
+        /// プラグインにDataUrls形式のイメージデータを設定します
+        /// </summary>
+        /// <param name="imageDataUrls">設定するイメージデータ</param>
+        [DllImport("__Internal")]
+        public static extern void SetScreenShotData(string imageDataUrls);
 
 
         /// <summary>
@@ -307,6 +315,12 @@ namespace RpgAtsumaruApiForUnity
         /// Screenshot API の screenshot.displayModal 関数を呼び出した時の完了通知を受けるコールバック関数名（引数にはエラーが発生したかどうかを含むJSONデータを受ける文字列型が必要です）
         /// </summary>
         public string ScreenshotCallback;
+
+
+        /// <summary>
+        /// RPGアツマールのスクリーンショットボタンが押されスクリーンショットイメージを要求された時のコールバック関数名
+        /// </summary>
+        public string TakeScreenshotCallback;
 
 
         /// <summary>

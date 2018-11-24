@@ -19,11 +19,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("RpgAtsumaruApiForUnity")]
-[assembly: AssemblyDescription("RpgAtumaru game develop support library.")]
+[assembly: AssemblyTitle("RpgAtsumaruApiForUnity.Editor")]
+[assembly: AssemblyDescription("RpgAtsumaru unity editor.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinoa")]
-[assembly: AssemblyProduct("RpgAtsumaruApiForUnity")]
+[assembly: AssemblyProduct("RpgAtsumaruApiForUnity.Editor")]
 [assembly: AssemblyCopyright("Copyright © Sinoa 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // このプロジェクトが COM に公開される場合、次の GUID が typelib の ID になります
-[assembly: Guid("85773767-a48e-487e-8582-a9314ea575a1")]
+[assembly: Guid("3be1b2dd-b861-47f3-b935-2349dd0c4750")]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //
