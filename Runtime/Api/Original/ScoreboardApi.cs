@@ -27,7 +27,7 @@ namespace RpgAtsumaruApiForUnity
     {
         // 定数定義
         private const long MaxLimitScoreValue = 999999999999999L;
-        private const long MinLimitScoreValue = 0L;
+        private const long MinLimitScoreValue = -999999999999999L;
 
         // メンバ変数定義
         private ImtAwaitableManualReset<string> scoreboardShowAwaitable;
