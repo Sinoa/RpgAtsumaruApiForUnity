@@ -13,6 +13,7 @@
 // 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 
+using System;
 using System.Threading.Tasks;
 using IceMilkTea.Core;
 using UnityEngine;
@@ -24,6 +25,10 @@ namespace RpgAtsumaruApiForUnity
     /// </summary>
     public class RpgAtsumaruScoreboard
     {
+        // 定数定義
+        private const long MaxLimitScoreValue = 999999999999999L;
+        private const long MinLimitScoreValue = 0L;
+
         // メンバ変数定義
         private ImtAwaitableManualReset<string> scoreboardShowAwaitable;
         private ImtAwaitableManualReset<string> scoreboardSendAwaitable;
@@ -116,8 +121,13 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="boardId">送信する先のスコアボードID</param>
         /// <param name="score">送信するスコア</param>
         /// <returns>スコアを送信する操作タスクを返します</returns>
+        /// <exception cref="ArgumentOutOfRangeException">score が {MinLimitScoreValue} - {MaxLimitScoreValue} の範囲外です Value={score}</exception>
         public virtual async Task<(bool isError, string message)> SendScoreAsync(int boardId, long score)
         {
+            // 例外判定を処理する
+            ThrowIfOutOfRangeScore(score);
+
+
             // もし、シグナル状態なら
             if (scoreboardSendAwaitable.IsCompleted)
             {
@@ -160,6 +170,22 @@ namespace RpgAtsumaruApiForUnity
 
             // 結果を返す
             return (result.ErrorOccured, result.Error.message, result.ScoreboardData);
+        }
+
+
+        /// <summary>
+        /// スコアがRPGアツマールで扱えない範囲の場合に例外をスローします
+        /// </summary>
+        /// <param name="score">これから扱うスコア</param>
+        /// <exception cref="ArgumentOutOfRangeException">score が {MinLimitScoreValue} - {MaxLimitScoreValue} の範囲外です Value={score}</exception>
+        protected void ThrowIfOutOfRangeScore(long score)
+        {
+            // スコアが最小と最大の範囲外なら
+            if (MinLimitScoreValue > score || score > MaxLimitScoreValue)
+            {
+                // 範囲外例外を吐く
+                throw new ArgumentOutOfRangeException(nameof(score), $"score が {MinLimitScoreValue} - {MaxLimitScoreValue} の範囲外です Value={score}");
+            }
         }
     }
 }
