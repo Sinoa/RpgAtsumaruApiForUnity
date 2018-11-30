@@ -35,7 +35,7 @@ namespace RpgAtsumaruApiForUnity
         private static RpgAtsumaruComment commentApi;
         private static RpgAtsumaruController controllerApi;
         private static RpgAtsumaruScoreboard scoreboardApi;
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static bool initialized;
 #endif
 
@@ -46,7 +46,7 @@ namespace RpgAtsumaruApiForUnity
         /// RpgAtsumaruApiForUnity プラグインが初期化済みかどうか
         /// </summary>
         public static bool Initialized =>
-#if !UNITY_EDITOR && UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL && !DEVELOPMENT_BUILD
             RpgAtsumaruNativeApi.IsInitialized();
 #else
             initialized;
@@ -195,7 +195,7 @@ namespace RpgAtsumaruApiForUnity
             };
 
 
-#if !UNITY_EDITOR && UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL && !DEVELOPMENT_BUILD
             // 初期化パラメータのJSONデータ化してネイティブAPIの初期化をする
             var jsonData = JsonUtility.ToJson(nativeApiInitializeParam);
             RpgAtsumaruNativeApi.Initialize(jsonData);
