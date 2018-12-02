@@ -52,8 +52,13 @@ namespace RpgAtsumaruApiForUnity
         /// <param name="boardId">送信する先のスコアボードID</param>
         /// <param name="score">送信するスコア</param>
         /// <returns>常に成功をする完了タスクを返します</returns>
+        /// <exception cref="ArgumentOutOfRangeException">score が {MinLimitScoreValue} - {MaxLimitScoreValue} の範囲外です Value={score}</exception>
         public override Task<(bool isError, string message)> SendScoreAsync(int boardId, long score)
         {
+            // 例外判定を処理する
+            ThrowIfOutOfRangeScore(score);
+
+
             // どのようなパラメータで呼び出されたのかのログを吐く
             InternalLogger.Log(LogLevel.Log, $"{GetType().Name}.{nameof(SendScoreAsync)}({boardId}, {score})");
             return Task.FromResult((false, string.Empty));
