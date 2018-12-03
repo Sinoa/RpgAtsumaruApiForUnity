@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.ExceptionServices;
 using UnityEditor;
 using UnityEngine;
@@ -35,6 +36,8 @@ namespace RpgAtsumaruApiForUnity.Editor
         [NonSerialized]
         private bool initialized;
         private Queue<Action> messageQueue;
+        private string convertedText;
+        private Texture previewTexture;
 
 
 
@@ -94,6 +97,11 @@ namespace RpgAtsumaruApiForUnity.Editor
             messageQueue = new Queue<Action>();
 
 
+            // 他のメンバも初期化をする
+            convertedText = string.Empty;
+            previewTexture = null;
+
+
             // 初期化済みマーク
             initialized = true;
         }
@@ -148,6 +156,34 @@ namespace RpgAtsumaruApiForUnity.Editor
                 render();
                 GUILayout.EndHorizontal();
             }
+
+
+            // 横並びレイアウトをする
+            LayoutHorizontal(() =>
+            {
+                // コマンドボタンを描画する
+                RenderButton("ロゴをロード", OnImageLoadButtonClick, true);
+                RenderButton("1x1透明画像をロード", OnTransparentDotImageLoadButtonClick, true);
+                RenderButton("テンプレートを生成", OnGenerateButtonClick, previewTexture != null);
+            });
+
+
+            // プレビュー用テクスチャがあるなら
+            if (previewTexture != null)
+            {
+                // 少しスペースを作る
+                EditorGUILayout.Space();
+
+
+                // 描画範囲をもらって、中央寄せでプレビューテクスチャを描画する
+                var renderRect = EditorGUILayout.GetControlRect(GUILayout.Width(previewTexture.width), GUILayout.Height(previewTexture.height));
+                renderRect.x = (EditorGUIUtility.currentViewWidth - renderRect.width) / 2.0f;
+                EditorGUI.DrawTextureTransparent(renderRect, previewTexture);
+
+
+                // テクスチャのサイズラベルを描画
+                EditorGUILayout.LabelField($"画像の大きさ Width={previewTexture.width} Height={previewTexture.height}");
+            }
         }
 
 
@@ -162,6 +198,55 @@ namespace RpgAtsumaruApiForUnity.Editor
                 // 再描画要求をする
                 Repaint();
             }
+        }
+
+
+        /// <summary>
+        /// ロゴをロードボタンをクリックした時の処理を行います
+        /// </summary>
+        private void OnImageLoadButtonClick()
+        {
+            // 画像ファイルを開くが、選択されなかったら
+            var filePath = EditorUtility.OpenFilePanelWithFilters("起動ロゴ画像ファイルを選択", string.Empty, new string[] { "画像ファイル", "png,jpg,jpeg" });
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                // 何もせず終了
+                return;
+            }
+
+
+            // テクスチャとして画像をロードする
+            var texture = new Texture2D(1, 1);
+            texture.LoadImage(File.ReadAllBytes(filePath), false);
+            previewTexture = texture;
+
+
+            // DataUrl形式のデータも作る
+            convertedText = RpgAtsumaruEditorUtility.ConvertImageToDataUrls(filePath);
+        }
+
+
+        /// <summary>
+        /// 1x1透明画像の読み込みボタンをクリックした時の処理を行います
+        /// </summary>
+        private void OnTransparentDotImageLoadButtonClick()
+        {
+            // 1x1画像データをテクスチャとしてロードする
+            var texture = new Texture2D(1, 1);
+            texture.LoadImage(Convert.FromBase64String(RpgAtsumaruEditorResources.TransparentDotImage), false);
+            previewTexture = texture;
+
+
+            // DataUrl形式のデータも設定する
+            convertedText = RpgAtsumaruEditorResources.TransparentDotImageDataUrl;
+        }
+
+
+        /// <summary>
+        /// テンプレートを生成ボタンをクリックした時の処理を行います
+        /// </summary>
+        private void OnGenerateButtonClick()
+        {
         }
     }
 }
