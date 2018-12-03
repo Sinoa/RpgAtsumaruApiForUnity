@@ -31,6 +31,7 @@ namespace RpgAtsumaruApiForUnity.Editor
         private int RecommendMaxDataSize = (63 << 10);
 
         // メンバ変数定義
+        [NonSerialized]
         private bool initialized;
         private Queue<Action> messageQueue;
         private string selectedFilePath;
@@ -68,6 +69,8 @@ namespace RpgAtsumaruApiForUnity.Editor
             messageQueue = new Queue<Action>();
             selectedFilePath = string.Empty;
             convertedDataUrls = string.Empty;
+            displayText = string.Empty;
+            scrollPosition = Vector2.zero;
 
 
             // 初期化済みマーク
