@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.ExceptionServices;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,6 +32,7 @@ namespace RpgAtsumaruApiForUnity.Editor
         private const string WebGlTemplateImageDataUrlPlaceHolder = "%ATSUMARU_LOGO_DATAURL%";
         private const string WebGlTemplateImageWidthPlaceHolder = "%ATSUMARU_LOGO_WIDTH%";
         private const string WebGlTemplateImageHeightPlaceHolder = "%ATSUMARU_LOGO_HEIGHT%";
+        private const string OutputDirectoryPath = "Assets/WebGLTemplates/RPGAtsumaru";
 
         // メンバ変数定義
         [NonSerialized]
@@ -247,6 +249,37 @@ namespace RpgAtsumaruApiForUnity.Editor
         /// </summary>
         private void OnGenerateButtonClick()
         {
+            // BOMなしUTF8エンコードを生成してHTMLテンプレートを読み込む
+            var encoding = new UTF8Encoding(false);
+            var template = encoding.GetString(Convert.FromBase64String(RpgAtsumaruEditorResources.WebGlHtmlData));
+
+
+            // プレースホルダーの置換をする
+            template = template
+                .Replace(WebGlTemplateImageDataUrlPlaceHolder, convertedText)
+                .Replace(WebGlTemplateImageWidthPlaceHolder, previewTexture.width.ToString())
+                .Replace(WebGlTemplateImageHeightPlaceHolder, previewTexture.height.ToString());
+
+
+            // 出力先ディレクトリ情報を生成してディレクトリが存在しないなら
+            var templateDirectoryInfo = new DirectoryInfo(OutputDirectoryPath);
+            if (!templateDirectoryInfo.Exists)
+            {
+                // ディレクトリを作る
+                templateDirectoryInfo.Create();
+            }
+
+
+            // HTMLテンプレートとサムネイル画像を出力する
+            var outputFilePath = Path.Combine(templateDirectoryInfo.FullName, "index.html");
+            File.WriteAllText(outputFilePath, template, encoding);
+            outputFilePath = Path.Combine(templateDirectoryInfo.FullName, "thumbnail.png");
+            File.WriteAllBytes(outputFilePath, Convert.FromBase64String(RpgAtsumaruEditorResources.WebGlThumbnailImage));
+
+
+            // アセットデータベースを更新して出力が終わったことを伝える
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            EditorUtility.DisplayDialog("完了", "テンプレートの出力をしました。\nビルド設定から「RPGAtsumaru」テンプレートを選択して下さい。", "OK");
         }
     }
 }
