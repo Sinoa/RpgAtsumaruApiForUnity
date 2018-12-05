@@ -381,7 +381,7 @@ var RpgAtsumaruApiForUnity =
                 else if (inputKey == "left")
                 {
                     // 左方向入力ビットマスクを設定
-                    inputBitMask = 0x20;
+                    inputBitMask = 0x02;
                 }
                 else if (inputKey == "right")
                 {
