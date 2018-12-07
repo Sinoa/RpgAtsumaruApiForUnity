@@ -33,9 +33,6 @@ namespace RpgAtsumaruApiForUnity
         private ImtAwaitableManualReset<string> creatorInfoShowAwaitable;
         private ImtAwaitableManualReset<string> screenshotAwaitable;
         private ImtAwaitableManualReset takeScreenShotAwaitable;
-        private string defaultScreenShotData;
-        private string screenShotData;
-        private bool takeScreenShot;
         private int screenShotQuality;
 
 
@@ -73,6 +70,7 @@ namespace RpgAtsumaruApiForUnity
             receiver.CreatorInfoShown += OnCreatorInfoShown;
             receiver.EndOfFrameTriggered += OnEndOfFrame;
             receiver.RequestScreenShot += OnRequestScreenShot;
+            receiver.ScreenshotCompleted += OnScreenshotCompleted;
 
 
             // マニュアルリセット待機可能オブジェクトをシグナル状態で生成する
@@ -82,9 +80,8 @@ namespace RpgAtsumaruApiForUnity
             takeScreenShotAwaitable = new ImtAwaitableManualReset(true);
 
 
-            // スクリーンショットクォリティとスクリーンショットデフォルトイメージの設定
+            // スクリーンショットクォリティの設定
             ScreenShotQuality = 50;
-            SetDefaultScreenShotImgeData(DefaultPluginScreenShotData);
         }
 
 
@@ -126,22 +123,12 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         private void OnRequestScreenShot()
         {
-            // もしスクリーンショットデータがまだ存在しないなら
-            if (screenShotData == null)
+            // もしスクリーンショット取り出し待機オブジェクトがシグナル状態なら
+            if (takeScreenShotAwaitable.IsCompleted)
             {
-                // デフォルトのスクリーンショットデータを設定する
-                RpgAtsumaruNativeApi.SetScreenShotData(defaultScreenShotData);
-
-
-                // スクリーンショットを撮る要求をして一度抜ける
-                takeScreenShot = true;
-                return;
+                // リセットする
+                takeScreenShotAwaitable.Reset();
             }
-
-
-            // スクリーンショットデータを設定して初期化する
-            RpgAtsumaruNativeApi.SetScreenShotData(screenShotData);
-            screenShotData = null;
         }
 
 
@@ -150,8 +137,8 @@ namespace RpgAtsumaruApiForUnity
         /// </summary>
         private void OnEndOfFrame()
         {
-            // スクリーンショットを撮る要求が無いなら
-            if (!takeScreenShot)
+            // スクリーンショット取り出し待機オブジェクトがシグナル状態なら
+            if (takeScreenShotAwaitable.IsCompleted)
             {
                 // すぐに終了
                 return;
@@ -164,24 +151,13 @@ namespace RpgAtsumaruApiForUnity
             copyTexture.Apply(false);
 
 
-            // jpeg変換を経由してDataUrls変換して覚える
-            screenShotData = $"data:image/jpeg;base64,{Convert.ToBase64String(copyTexture.EncodeToJPG(ScreenShotQuality))}";
+            // jpeg変換を経由してDataUrls変換したのちにRPGアツマール側にスクリーンショットを設定する
+            RpgAtsumaruNativeApi.SetScreenShotData($"data:image/jpeg;base64,{Convert.ToBase64String(copyTexture.EncodeToJPG(ScreenShotQuality))}");
 
-
-            // もしスクリーンショット待機オブジェクトが非シグナル状態なら
-            if (!screenshotAwaitable.IsCompleted)
-            {
-                // RPGアツマールのスクリーンショットAPIを叩く
-                RpgAtsumaruNativeApi.Screenshot();
-            }
 
 
             // スクリーンショットを撮る待機オブエジェクトをシグナル状態にする
             takeScreenShotAwaitable.Set();
-
-
-            // スクリーンショット要求を下ろす
-            takeScreenShot = false;
         }
 
 
@@ -255,21 +231,14 @@ namespace RpgAtsumaruApiForUnity
         /// <returns>スクリーンショットとTwitter投稿ダイアログを操作しているタスクを返します</returns>
         public virtual async Task<(bool isError, string message)> ScreenshotAsync()
         {
-            // もしスクリーンショットを撮る待機オブジェクトがシグナル状態なら
-            if (takeScreenShotAwaitable.IsCompleted)
+            // もしスクリーンショット待機オブジェクトがシグナル状態なら
+            if (screenshotAwaitable.IsCompleted)
             {
-                // スクリーンショットを撮る待機オブジェクトと、スクリーンショット待機オブジェクトの両方を非シグナル状態にする
-                takeScreenShotAwaitable.Reset();
+                // 非シグナル状態にしてスクリーンショット関数を叩く
                 screenshotAwaitable.Reset();
-
-
-                // スクリーンショットを撮る要求を設定する
-                takeScreenShot = true;
+                RpgAtsumaruNativeApi.Screenshot();
             }
 
-
-            // スクリーンショットを撮る待機オブジェクトを待つ
-            await takeScreenShotAwaitable;
 
 
             // スクリーンショット待機オブジェクトがシグナル状態になるまで待って結果を受け取る
@@ -286,14 +255,14 @@ namespace RpgAtsumaruApiForUnity
         /// スクリーンショットAPIによって表示される、デフォルトイメージを設定します。
         /// </summary>
         /// <remarks>
-        /// 設定されたデフォルトイメージは、直接RPGアツマールのスクリーンショットプレビューボタンを押されたときに利用されます。
+        /// ※注：この関数は、もはや呼び出す必要はなくなりました。RPGアツマール側のスクリーンショットからでも直ちにスクリーンショットが撮れるようになっています。
+        /// 次回バージョン以降に、削除される可能性があります。
         /// </remarks>
         /// <param name="imageDataUrls">DataUrls形式のデフォルトイメージデータの文字列</param>
         /// <exception cref="ArgumentException">imageDataUrls が null または 空白文字列 です</exception>
+        [Obsolete("この関数は、もはや呼び出す必要はなくなりました")]
         public void SetDefaultScreenShotImgeData(string imageDataUrls)
         {
-            // デフォルトスクリーンショットデータを設定する
-            defaultScreenShotData = string.IsNullOrWhiteSpace(imageDataUrls) ? throw new ArgumentException($"{nameof(imageDataUrls)} が null または 空白文字列 です", nameof(imageDataUrls)) : imageDataUrls;
         }
     }
 }
