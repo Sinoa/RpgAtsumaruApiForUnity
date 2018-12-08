@@ -25,7 +25,7 @@ var RpgAtsumaruApiForUnity =
         volumeSubscription: null,     // 音量APIのサブスクリプション参照
         controllerSubscription: null, // コントローラAPIのサブスクリプション参照
         inputPress: 0,                // コントローラの押し込み状態を保持する
-        screenShotImage: "",          // スクリーンショットイメージ（DataUrls形式）
+        screenShotCallback: null,     // スクリーンショットコールバック関数（第一引数にDataUrl形式の文字列を渡す必要あり）
         unityMethodNames:             // 非同期的にUnityへ通知するための各種メソッド名
         {
             // Storage API
@@ -105,13 +105,17 @@ var RpgAtsumaruApiForUnity =
         }
 
 
-        // RPGアツマールがスクリーンショットのイメージデータを取得する関数に、Unityが生成したイメージを返す関数として設定する
-        window.RPGAtsumaru.playerFeatures.takeScreenShot = function()
+        // RPGアツマールがスクリーンショットを撮影するときに呼び出すハンドラを設定する
+        RPGAtsumaru.experimental.screenshot.setScreenshotHandler(function()
         {
-            // Unityにスクリーンショットのデータを要求して、設定してもらったスクリーンショットデータを返す
-            SendMessage(Context.unityObjectName, Context.unityMethodNames.takeScreenShot);
-            return Context.screenShotImage;
-        };
+            // スクリーンショットデータを取り出す為の非同期制御オブジェクトを生成して返す
+            return new Promise(function(resolve, reject)
+            {
+                // 成功を通知するためのリゾルバ関数をコンテキストに入れて、スクリーンショットデータの要求が来た事をUnityへ通知する
+                Context.screenShotCallback = resolve;
+                SendMessage(Context.unityObjectName, Context.unityMethodNames.takeScreenShot);
+            })
+        });
 
 
         // 初期化済みをマーク
@@ -336,8 +340,9 @@ var RpgAtsumaruApiForUnity =
     // imageDataUrl : DataUrls形式のイメージデータ
     SetScreenShotData: function(imageDataUrl)
     {
-        // C#文字列ポインタからJS文字列へ変換してそのままスクリーンショットデータとして持つ
-        Context.screenShotImage = Pointer_stringify(imageDataUrl);
+        // C#文字列ポインタからJS文字列へ変換してスクリーンショットコールバックを呼ぶ
+        var imageDataUrl = Pointer_stringify(imageDataUrl);
+        Context.screenShotCallback(imageDataUrl);
     },
 
 
@@ -381,7 +386,7 @@ var RpgAtsumaruApiForUnity =
                 else if (inputKey == "left")
                 {
                     // 左方向入力ビットマスクを設定
-                    inputBitMask = 0x20;
+                    inputBitMask = 0x02;
                 }
                 else if (inputKey == "right")
                 {

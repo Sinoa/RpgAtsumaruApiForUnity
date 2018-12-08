@@ -4,7 +4,8 @@
 
 株式会社ドワンゴが提供しているサービスの1つである、ゲームプラットフォームRPGアツマールを  
 Unityからもより簡単にサービスの機能を扱いやすくするようにした、ライブラリです。  
-[RPGアツマール運営 Twitter](https://twitter.com/nico_indiesgame)
+[RPGアツマール運営 Twitter](https://twitter.com/nico_indiesgame)  
+[RPGアツマールAPI for Unity公式ブログ](https://rpgatsumaruapiforunity.sinoa.ws/blog/)
 
 ## 始め方(Getting Started)
 
@@ -36,6 +37,13 @@ Unityからもより簡単にサービスの機能を扱いやすくするよう
 
 ## 履歴(Version)
 
+* v1.2.0 (2018-12-08)
+    * モバイル版RPGアツマールでも起動できるようになりました
+    * RPGアツマールの新スクリーンショットAPIに対応しました
+    * RPGアツマール向けWebGLテンプレートを生成出来るようになりました
+    * コントローラAPIにて、左ボタンが決定ボタンとして動作してしまう問題の修正
+    * エディタツールがプログラムコンパイル時にエラーで閉じられてしまう問題の修正
+    * 新スクリーンショットAPI対応に伴い「General.SetDefaultScreenShotImgeData」関数が"Obsolete"になりました
 * v1.1.1 (2018-12-02)
     * スコアボードの送信スコア値が、規定値範囲外の場合例外をスローするようになりました
     * "DevelopmentBuild"でビルドされた場合に、ライブラリがダミー動作するように変更

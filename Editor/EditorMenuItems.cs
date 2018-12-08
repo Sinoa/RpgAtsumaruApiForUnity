@@ -38,5 +38,16 @@ namespace RpgAtsumaruApiForUnity.Editor
             // ウィンドウを開く
             EditorWindow.GetWindow<ImageToDataUrlsConvertWindow>();
         }
+
+
+        /// <summary>
+        /// WebGlTemplateGenerateWindowを表示します
+        /// </summary>
+        [MenuItem(WindowGroupMenuItemName + "/WebGLテンプレート作成")]
+        public static void ShowWebGlTemplateGenerateWindow()
+        {
+            // ウィンドウを開く
+            EditorWindow.GetWindow<WebGlTemplateGenerateWindow>();
+        }
     }
 }
