@@ -77,7 +77,7 @@ RPGアツマールAPI for Unity {#mainpage}
 
 ## ダウンロード
 
-[このページ](https://bitbucket.org/Sinoa/rpgatsumaruapiforunity/downloads/)から最新のバージョンをダウンロードして下さい。  
+[このページ](https://github.com/Sinoa/RpgAtsumaruApiForUnity/releases)から最新のバージョンをダウンロードして下さい。  
 参考画面は以下のとおりです。  
 ![](@ref image006.jpg)
 

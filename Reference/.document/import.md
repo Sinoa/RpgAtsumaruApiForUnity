@@ -27,4 +27,4 @@ Unityへインポート {#import}
   
 ![RPGアツマールAPI for Unityがインポートされている事が確認できる](@ref image005.jpg)  
 
-[ダウンロードページ]: https://bitbucket.org/Sinoa/rpgatsumaruapiforunity/downloads/ "ダウンロードページ"
+[ダウンロードページ]: https://github.com/Sinoa/RpgAtsumaruApiForUnity/releases "ダウンロードページ"
