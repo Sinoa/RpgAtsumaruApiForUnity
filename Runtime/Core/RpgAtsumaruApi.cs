@@ -35,7 +35,7 @@ namespace RpgAtsumaruApiForUnity
         private static RpgAtsumaruComment commentApi;
         private static RpgAtsumaruController controllerApi;
         private static RpgAtsumaruScoreboard scoreboardApi;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || !UNITY_WEBGL
         private static bool initialized;
 #endif
 
