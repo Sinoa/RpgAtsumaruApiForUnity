@@ -1,10 +1,25 @@
 {
-	"name": "jp.sinoa.rpgatsumaruapiforunity",
-	"displayName": "RpgAtsumaruApiForUnity",
-	"version": "1.2.0",
-	"unity": "2018.3",
-	"description": "This package provides RPGAtsumaru in NicoGame develop For WebGL.",
-	"keywords": ["support", "niconico", "RPGAtsumaru", "webgl"],
-	"category": "GameLibrary",
-	"dependencies": {}
+  "name": "jp.sinoa.rpgatsumaruapiforunity",
+  "displayName": "RpgAtsumaruApiForUnity",
+  "description": "This package provides RPGAtsumaru in NicoGame develop For WebGL.",
+  "category": "GameLibrary",
+  "type": "library",
+  "version": "2.0.0",
+  "unity": "2019.4",
+  "keywords": [
+    "support",
+    "niconico",
+    "RPGAtsumaru",
+    "webgl"
+  ],
+  "author": {
+    "name": "Sinoa",
+    "email": "sinoa.dev@gmail.com",
+    "url": "https://github.com/Sinoa/RpgAtsumaruApiForUnity"
+  },
+  "dependencies": {
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0"
+  }
 }
