@@ -16,5 +16,10 @@
     "name": "Sinoa",
     "email": "sinoa.dev@gmail.com",
     "url": "https://github.com/Sinoa/RpgAtsumaruApiForUnity"
+  },
+  "dependencies": {
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0"
   }
 }
