@@ -4,7 +4,7 @@
   "description": "This package provides RPGAtsumaru in NicoGame develop For WebGL.",
   "category": "GameLibrary",
   "type": "library",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "unity": "2019.4",
   "keywords": [
     "support",
