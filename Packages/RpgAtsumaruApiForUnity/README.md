@@ -1,10 +1,11 @@
-# RpgAtsumaruApiForUnity（Unity Project）
+# RpgAtsumaruApiForUnity
 
 ## 説明(Description)
 
-リポジトリルートに配置されたディレクトリ構造は Unity3D ゲームエンジン向け構造のため  
-本体へのアクセスをする場合は、 [RpgAtsumaruApiForUnity（Packages/RpgAtsumaruApiForUnity/）](Packages/RpgAtsumaruApiForUnity/README.md) へアクセスしてください。  
-もともと、Unityプロジェクトと RpgAtsumaruApiForUnity のリポジトリを分けていましたが、今後の RpgAtsumaruApiForUnity はパッケージ配信が主体になるためこれを機にリポジトリ構成も変更という形になりました。
+株式会社ドワンゴが提供しているサービスの1つである、ゲームプラットフォームRPGアツマールを  
+Unityからもより簡単にサービスの機能を扱いやすくするようにした、ライブラリです。  
+[RPGアツマール運営 Twitter](https://twitter.com/nico_indiesgame)  
+[RPGアツマールAPI for Unityマニュアル](https://sinoa-dev.gitbook.io/rpgatsumaruapiforunity/)
 
 ### 導入方法(Installing)
 
